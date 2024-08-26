@@ -1,0 +1,8 @@
+
+input {
+  padding-top: 2rem; 
+}
+
+label {
+  transition: all 0.3s ease-in-out;
+}
