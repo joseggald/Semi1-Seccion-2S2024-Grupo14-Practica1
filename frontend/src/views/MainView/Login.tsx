@@ -5,13 +5,15 @@ import FormInput from '../../components/FormInput';
 import ImageCarousel from '../../components/ImageCarousel';
 import svg1 from '../../assets/login/forms1.svg';
 import logoApp from '../../assets/login/logo_app.jpg';
-import { login } from '../../services/authSevice';
+import { login } from '../../services/authService';
+import { useAuth } from '../../context/AuthContext';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { loginUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,6 +21,7 @@ const Login: React.FC = () => {
 
     try {
       await login(email, password);
+      loginUser();
       navigate('/dashboard');
     } catch (err) {
       setError('Login failed. Please check your credentials.');
@@ -76,7 +79,7 @@ const Login: React.FC = () => {
           <div className="mt-6 text-center">
             <p className="text-gray-400">Don't have an account?</p>
             <button
-              onClick={() => navigate('/register')}
+              onClick={() => navigate('/register')} // Navegar al registro
               className="text-accent hover:underline mt-2"
             >
               Register Now

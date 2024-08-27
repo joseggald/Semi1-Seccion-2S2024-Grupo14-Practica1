@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import FormInput from '../../components/FormInput';
 import logoApp from '../../assets/login/logo_app.jpg';
-import { register } from '../../services/authSevice';
+import { register } from '../../services/authService';
 
 const Register: React.FC = () => {
   const [firstName, setFirstName] = useState('');
@@ -13,14 +13,12 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
-  const [photo, setPhoto] = useState<File | null>(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRegisterClick = async () => {
     setError('');
-    
+
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
@@ -29,17 +27,20 @@ const Register: React.FC = () => {
     const newUser = {
       first_name: firstName,
       last_name: lastName,
-      email,
-      password,
+      email: email,
+      password: password,
       role_id: role,
-      photo_url: photo ? URL.createObjectURL(photo) : '',
       date_of_birth: dateOfBirth,
+      photo_url: 'https://multimedia-semi1-seccion-g14.s3.amazonaws.com/fotos/1000CANCIONES.png',
     };
-
+    console.log('New user:', newUser);
     try {
+      console.log('Sending data:', newUser); 
       await register(newUser);
-      navigate('/dashboard');
+      console.log('Registration successful'); 
+      navigate('/login');
     } catch (err) {
+      console.error('Registration failed:', err);
       setError('Registration failed. Please try again.');
     }
   };
@@ -53,7 +54,7 @@ const Register: React.FC = () => {
         </div>
       </div>
 
-      <div className=" bg-[#2b2e37] w-full max-w-6xl bg-opacity-90 backdrop-blur-md p-6 rounded-lg shadow-2xl flex">
+      <div className="bg-[#2b2e37] w-full max-w-6xl bg-opacity-90 backdrop-blur-md p-6 rounded-lg shadow-2xl flex">
         <div className="w-1/2 pr-4">
           <FormInput
             label="First Name"
@@ -112,33 +113,23 @@ const Register: React.FC = () => {
             value={dateOfBirth}
             onChange={(e) => setDateOfBirth(e.target.value)}
           />
-          <div className="mb-6">
-          <label htmlFor="photo" className="text-gray-400 text-sm mb-1 block">Profile Picture</label>
-            <input
-              type="file"
-              id="photo"
-              onChange={(e) => setPhoto(e.target.files ? e.target.files[0] : null)}
-              className="block py-2 w-full text-sm text-gray-400
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-full file:border-0
-                file:text-sm file:font-semibold
-                file:bg-blue-50 file:text-blue-700
-                hover:file:bg-blue-100"
-            />
-          </div>
         </div>
       </div>
 
+      {error && <div className="text-red-500 text-center mt-4">{error}</div>}
+
       <div className="w-1/3 max-w-6xl mt-6">
-        <Button text="Register" type="submit" className="w-full" />
+        <Button text="Register" onClick={handleRegisterClick} className="w-full" />
       </div>
       <div className="mt-4 text-center">
-        <p className="text-gray-400">Already have an account? <button
-          onClick={() => navigate('/')}
-          className="text-accent hover:underline"
-        >
-          Login Now
-        </button></p>
+        <p className="text-gray-400">Already have an account? 
+          <button
+            onClick={() => navigate('/login')}
+            className="text-accent hover:underline ml-2"
+          >
+            Login Now
+          </button>
+        </p>
       </div>
     </div>
   );
