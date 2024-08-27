@@ -75,3 +75,21 @@ exports.logoutUser = async (req, res) => {
     }
 };
 
+exports.getUserById = async (req, res) => {
+    const token = req.cookies.session_token;
+    try {
+        const session = new UserSession();
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const foundSession = await session.find(decoded.id, token);
+
+        if (!foundSession) {
+            return res.status(401).json({ message: 'Invalid session' });
+        }
+
+        const user = new User();
+        const foundUser = await user.findById(decoded.id);
+        res.json(foundUser);
+    } catch (error) {
+        error.status(400).json({ error: error.message });
+    }
+}

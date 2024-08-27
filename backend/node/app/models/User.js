@@ -26,6 +26,18 @@ class User {
         }   
     }
 
+    async findById(id) {
+        const query = 'SELECT * FROM users WHERE id = $1';
+        const values = [id];
+        
+        try {
+            const result = await pool.query(query, values);
+            return result.rows[0];
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
     async findByEmail(email) {
         const query = 'SELECT * FROM users WHERE email = $1';
         const values = [email];
