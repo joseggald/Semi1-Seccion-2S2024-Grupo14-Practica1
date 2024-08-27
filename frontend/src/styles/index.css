@@ -1,18 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap');
+@import 'slick-carousel/slick/slick.css';
+@import 'slick-carousel/slick/slick-theme.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@keyframes fade-in-up {
+body {
+  font-family: 'Moderustic', sans-serif;
+}
+
+
+@keyframes slide-in-right {
   0% {
+    transform: translateX(100%);
     opacity: 0;
-    transform: translateY(10px);
   }
   100% {
+    transform: translateX(0);
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-.animate-fade-in-up {
-  animation: fade-in-up 0.5s ease-in-out forwards;
+.animate-slide-in-right {
+  animation: slide-in-right 0.5s ease-out;
 }

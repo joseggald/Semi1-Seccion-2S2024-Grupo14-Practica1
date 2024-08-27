@@ -23,22 +23,22 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return user_service.create_user(user,db)
 
 @router.post("/verify_session", response_model=MessageResponse)
-def verify_session(user_data:SessionData, db: Session = Depends(get_db)):
+def verify_session(session_token: str = Cookie(None), db: Session = Depends(get_db)):
     user_service = UserService()
-    return user_service.verify_session(user_data.token, db)
+    return user_service.verify_session(session_token, db)
 
 @router.post("/logout", response_model=MessageResponse)
-def logout(user_data:SessionData, db: Session = Depends(get_db)):
+def logout(session_token: str = Cookie(None), db: Session = Depends(get_db)):
     user_service = UserService()
-    response = user_service.logout(user_data.token, db)
+    response = user_service.logout(session_token, db)
     
     response = JSONResponse(content={"message": "Logged out successfully"})
     response.delete_cookie("session_token")
 
     return response
 
-@router.get("/get_user_byId/{token}", response_model=UserGet)
-def get_user_byId(token:str, db: Session = Depends(get_db)):
+@router.get("/get_user_byId/", response_model=UserGet)
+def get_user_byId(session_token: str = Cookie(None), db: Session = Depends(get_db)):
     user_service = UserService()
-    return user_service.get_user_byId(token, db)
+    return user_service.get_user_byId(session_token, db)
 

@@ -1,11 +1,22 @@
-/** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    './src/**/*.{js,jsx,ts,tsx}', // Asegúrate de que Tailwind CSS escanee todos tus archivos
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: '#333842',
+        accent: '#0085FF',
+        background: '#111111',
+        inputBg: '#222831',
+        buttonBg: '#0085FF',
+        buttonHoverBg: '#005bb5',
+        text: '#FFFFFF',
+      },
+      fontFamily: {
+        moderustic: ['Moderustic', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
-}
+};
