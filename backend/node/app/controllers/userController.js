@@ -1,6 +1,8 @@
+require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const UserSession = require('../models/UserSession');
 
 exports.registerUser = async (req, res) => {
     const {first_name, last_name, email, password, role_id, photo_url, date_of_birth} = req.body;
@@ -15,3 +17,61 @@ exports.registerUser = async (req, res) => {
         res.status(400).json({error: error.message });   
     }
 };
+
+exports.loginUser = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = new User();
+        const foundUser = await user.findByEmail(email);
+
+        if (!foundUser || !(await bcrypt.compare(password, foundUser.hashed_password))) {
+            return res.status(400).json({ message: 'Incorrect email or password' });
+        }
+
+        const token = jwt.sign({ id: foundUser.id, email: foundUser.email }, process.env.SECRET_KEY, { expiresIn: '30m' });
+        const session = new UserSession(foundUser.id, token);
+        await session.save();
+        res.cookie('session_token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
+        res.json({ message: 'Logged in successfully' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+exports.verifySession = async (req, res) => {
+    const token = req.cookies.session_token;
+    try {
+
+        const session = new UserSession();
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const foundSession = await session.find(decoded.id, token);
+
+        if (!foundSession) {
+            return res.status(401).json({ message: 'Invalid session' });
+        }
+
+        res.json({ message: 'Session is valid' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+exports.logoutUser = async (req, res) => {
+    const token = req.cookies.session_token;
+    try {
+        const session = new UserSession();
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const foundSession = await session.find(decoded.id, token);
+
+        if (!foundSession) {
+            return res.status(401).json({ message: 'Invalid session' });
+        }
+
+        await session.delete(foundSession.id);
+        res.clearCookie('session_token');
+        res.json({ message: 'Logged out successfully' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
