@@ -11,5 +11,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     ALGORITHM: str = os.getenv("ALGORITHM")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 129600 
+    aws_access_key_id: str = os.getenv("AWS_ACCESS_KEY_ID")
+    aws_secret_access_key: str = os.getenv("AWS_SECRET_ACCESS_KEY")
+    s3_bucket_name: str = os.getenv("S3_BUCKET_NAME")
 
 settings = Settings()
