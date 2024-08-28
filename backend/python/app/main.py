@@ -18,7 +18,7 @@ app.add_middleware(
 
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(s3.router, prefix="/s3", tags=["Songs"])
-app.include_router(songs.router, prefix="/media", tags={"Media"})
+app.include_router(songs.router, prefix="/songs", tags={"Songs"})
 
 @app.on_event("startup")
 def on_startup():
