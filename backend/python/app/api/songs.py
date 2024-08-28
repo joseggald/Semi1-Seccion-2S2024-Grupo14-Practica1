@@ -10,7 +10,7 @@ from typing import List
 
 router = APIRouter()
 
-@router.post("/song", response_model=MessageResponse)
+@router.post("/create", response_model=MessageResponse)
 def create_song(song: SongCreate, db: Session = Depends(get_db)):
     song_service = SongService()
     
@@ -26,7 +26,7 @@ def create_song(song: SongCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal Server Error")
     
     
-@router.put("/song/{id}", response_model=MessageResponse)
+@router.put("/update/{id}", response_model=MessageResponse)
 def update_song(id:int, song: SongCreate, db: Session = Depends(get_db)):
     song_service = SongService()
     
@@ -41,7 +41,7 @@ def update_song(id:int, song: SongCreate, db: Session = Depends(get_db)):
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal Server Error")
     
-@router.delete("/song/{id}", response_model=MessageResponse)
+@router.delete("/delete/{id}", response_model=MessageResponse)
 def update_song(id:int, db: Session = Depends(get_db)):
     song_service = SongService()
     
@@ -56,7 +56,7 @@ def update_song(id:int, db: Session = Depends(get_db)):
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal Server Error")
     
-@router.get("/song/{id}", response_model=SongRead)
+@router.get("/get_by_Id/{id}", response_model=SongRead)
 def get_song_by_id(id:int, db: Session = Depends(get_db)):
     song_service = SongService()
     
@@ -70,7 +70,7 @@ def get_song_by_id(id:int, db: Session = Depends(get_db)):
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal Server Error")
     
-@router.get("/song", response_model=List[SongRead])
+@router.get("/get_all", response_model=List[SongRead])
 def get_songs(db: Session = Depends(get_db)):
     song_service = SongService()
     
