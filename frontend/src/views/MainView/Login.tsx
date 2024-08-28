@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../components/Button';
-import FormInput from '../../components/FormInput';
-import ImageCarousel from '../../components/ImageCarousel';
+import Button from '../../components/Utility/Button';
+import FormInput from '../../components/Utility/FormInput';
+import ImageCarousel from '../../components/Utility/ImageCarousel';
 import svg1 from '../../assets/login/forms1.svg';
 import logoApp from '../../assets/login/logo_app.jpg';
 import { login } from '../../services/authService';
@@ -13,16 +13,24 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { loginUser } = useAuth();
+  const { loginUser, roleId } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
-      await login(email, password);
+      const user=await login(email, password);
       loginUser();
-      navigate('/dashboard');
+      console.log(user);
+      localStorage.setItem('user', JSON.stringify(user));
+      setTimeout(() => {
+        if (roleId === 1) {
+          navigate('/administrator', { replace: true });
+        } else {
+          navigate('/home', { replace: true });
+        }
+      }, 100);
     } catch (err) {
       setError('Login failed. Please check your credentials.');
     }

@@ -65,8 +65,7 @@ def logout(session_token: str = Cookie(None), db: Session = Depends(get_db)):
 
 @router.get("/get_user_byId/", response_model=UserGet)
 def get_user_byId(session_token: str = Cookie(None), db: Session = Depends(get_db)):
-    user_service = UserService()
-    
+    user_service = UserService()  
     if not session_token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token not provided")
     
