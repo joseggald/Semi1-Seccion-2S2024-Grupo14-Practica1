@@ -26,7 +26,7 @@ exports.loginUser = async (req, res) => {
         if (!foundUser || !(await bcrypt.compare(password, foundUser.hashed_password))) {
             return res.status(400).json({ message: 'Incorrect email or password' });
         }
-
+        console.log(process.env.SECRET_KEY);
         const token = jwt.sign({ id: foundUser.id, email: foundUser.email }, process.env.SECRET_KEY, { expiresIn: '30m' });
         const session = new UserSession(foundUser.id, token);
         await session.save();
