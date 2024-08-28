@@ -21,3 +21,6 @@ class UserGet(BaseModel):
     role_id: int
     photo_url: str
     date_of_birth: Date
+
+class UpdatePhotoRequest(BaseModel):
+    photo_url: str

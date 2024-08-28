@@ -54,7 +54,6 @@ export const verifySession = async () => {
 export const logout = async () => {
   try {
     const response = await axios.post(`${API_URL}/users/logout`, {}, { withCredentials: true });
-    localStorage.removeItem('user');
     return response.data;
   } catch (error) {
     handleError(error);

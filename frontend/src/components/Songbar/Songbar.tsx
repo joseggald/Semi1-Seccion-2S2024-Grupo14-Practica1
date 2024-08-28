@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import favIcon from '../../assets/songbar/fav.svg';
 import nextLeftIcon from '../../assets/songbar/next_left.svg';
 import nextRightIcon from '../../assets/songbar/next_right.svg';

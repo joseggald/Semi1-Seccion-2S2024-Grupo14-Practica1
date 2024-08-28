@@ -4,6 +4,7 @@ import Button from '../../components/Utility/Button';
 import FormInput from '../../components/Utility/FormInput';
 import logoApp from '../../assets/login/logo_app.jpg';
 import { register } from '../../services/authService';
+import { uploadImageToS3 } from '../../services/s3Service';
 
 const Register: React.FC = () => {
   const [firstName, setFirstName] = useState('');
@@ -13,8 +14,11 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
+  const [photo, setPhoto] = useState<File | null>(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const DEFAULT_PHOTO_URL = 'https://multimedia-semi1-seccion-g14.s3.amazonaws.com/fotos/default_image.jpg';
 
   const handleRegisterClick = async () => {
     setError('');
@@ -24,6 +28,23 @@ const Register: React.FC = () => {
       return;
     }
 
+    let photoUrl = DEFAULT_PHOTO_URL;
+
+    if (photo) {
+      try {
+        const imageResponse = await uploadImageToS3(photo);
+        if (imageResponse.url) {
+          photoUrl = imageResponse.url;
+        } else {
+          throw new Error('Image upload failed');
+        }
+      } catch (err) {
+        console.error('Failed to upload image:', err);
+        setError('Failed to upload image.');
+        return;
+      }
+    }
+
     const newUser = {
       first_name: firstName,
       last_name: lastName,
@@ -31,13 +52,11 @@ const Register: React.FC = () => {
       password: password,
       role_id: role,
       date_of_birth: dateOfBirth,
-      photo_url: 'https://multimedia-semi1-seccion-g14.s3.amazonaws.com/fotos/1000CANCIONES.png',
+      photo_url: photoUrl,  // Usa la URL de la imagen subida o la predeterminada
     };
-    console.log('New user:', newUser);
+
     try {
-      console.log('Sending data:', newUser); 
       await register(newUser);
-      console.log('Registration successful'); 
       navigate('/login');
     } catch (err) {
       console.error('Registration failed:', err);
@@ -113,6 +132,20 @@ const Register: React.FC = () => {
             value={dateOfBirth}
             onChange={(e) => setDateOfBirth(e.target.value)}
           />
+          <div className="mb-6">
+            <label htmlFor="photo" className="text-gray-400 text-sm mb-1 block">Profile Picture</label>
+            <input
+              type="file"
+              id="photo"
+              onChange={(e) => setPhoto(e.target.files ? e.target.files[0] : null)}
+              className="block py-2 w-full text-sm text-gray-400
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-blue-50 file:text-blue-700
+                hover:file:bg-blue-100"
+            />
+          </div>
         </div>
       </div>
 

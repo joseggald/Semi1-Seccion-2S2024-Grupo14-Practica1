@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from app.core.security import verify_password, get_password_hash, generate_token, decode_token
-from app.db.instances.users import get_user_by_email, create_user, get_user_by_id
+from app.db.instances.users import get_user_by_email, create_user, get_user_by_id, update_photo
 from app.db.instances.users_session import set_access_token, get_active_session, delete_user_session
 
 class UserService:
@@ -45,3 +45,8 @@ class UserService:
         if not db_user:
             raise HTTPException(status_code=400, detail="No user found with this id")
         return {"first_name": db_user.first_name, "last_name": db_user.last_name, "email": db_user.email, "role_id": db_user.role_id, "photo_url": db_user.photo_url, "date_of_birth": db_user.date_of_birth}
+    
+    def update_photo(self, token,photo_url, db):
+        user_id, email = decode_token(token)
+        update_photo(db, user_id, photo_url)
+        return {"message": "Photo updated successfully"}

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.schemas.userSchema import UserCreate, UserLogin,UserGet
+from app.schemas.userSchema import UserCreate, UserLogin,UserGet, UpdatePhotoRequest
 from app.schemas.generalSchemas import MessageResponse
 from app.schemas.usersessionSchema import SessionData
 from app.db.session import get_db
@@ -77,3 +77,14 @@ def get_user_byId(session_token: str = Cookie(None), db: Session = Depends(get_d
         # Log the exception here if needed
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal Server Error")
 
+@router.put("/update_photo", response_model=MessageResponse)
+def update_photo(request: UpdatePhotoRequest, session_token: str = Cookie(None), db: Session = Depends(get_db)):
+    user_service = UserService()
+    if not session_token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token not provided")
+    try:
+        return user_service.update_photo(session_token, request.photo_url, db)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal Server Error")
