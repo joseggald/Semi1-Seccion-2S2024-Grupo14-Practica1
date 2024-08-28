@@ -7,7 +7,10 @@ const {
   getSongById,
   getAllAdmin,
   getByNameAdmin,
-  getByAuthorAdmin
+  getByAuthorAdmin,
+  addToFavorites,
+  removeFromFavorites,
+  getFavoritesUser
 } = require("../controllers/songController");
 
 router.post("/create", createSong);
@@ -17,5 +20,8 @@ router.get("/get_by_Id/:id", getSongById);
 router.get("/get_all_admin", getAllAdmin);
 router.get("/get_by_name_admin/:name", getByNameAdmin);
 router.get("/get_by_author_admin/:author", getByAuthorAdmin);
+router.post("/add_to_favorites", addToFavorites);
+router.delete("/remove_from_favorites", removeFromFavorites);
+router.get("/get_favorites_user", getFavoritesUser);
 
 module.exports = router;
