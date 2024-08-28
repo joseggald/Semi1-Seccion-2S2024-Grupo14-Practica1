@@ -51,12 +51,37 @@ exports.getSongById = async (req, res) => {
     }
 };
 
-exports.getSongs = async (req, res) => {
+// getting songs for admin
+exports.getAllAdmin = async (req, res) => {
     try {
         const song = new Song();
-        const songs = await song.getAll();
+        const songs = await song.getAllAdmin();
         res.status(200).json(songs);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
+
+exports.getByNameAdmin = async (req, res) => {
+    try {
+        const { name } = req.params;
+        const song = new Song();
+        const foundSongs = await song.getByNameAdmin(name);
+        res.status(200).json(foundSongs);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+exports.getByAuthorAdmin = async (req, res) => {
+    try {
+        const { author } = req.params;
+        const song = new Song();
+        const foundSongs = await song.getByAuthorAdmin(author);
+        res.status(200).json(foundSongs);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// getting songs for user

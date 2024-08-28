@@ -58,11 +58,35 @@ class Song {
         }
     }
 
-    async getAll() {
+    async getAllAdmin() {
         const query = 'SELECT * FROM songs';
         
         try {
             const result = await pool.query(query);
+            return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async getByNameAdmin(name) {
+        const query = 'SELECT * FROM songs WHERE name LIKE $1';
+        const values = [`%${name}%`];
+
+        try {
+            const result = await pool.query(query, values);
+            return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async getByAuthorAdmin(author) {
+        const query = 'SELECT * FROM songs WHERE artist_name LIKE $1';
+        const values = [`%${author}%`];;
+        
+        try {
+            const result = await pool.query(query, values);
             return result.rows;
         } catch (error) {
             throw new Error(error);
