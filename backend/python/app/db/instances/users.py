@@ -22,3 +22,10 @@ def create_user(db: Session, user: UserCreate, password: str):
 
 def get_user_by_id(db: Session, id: int):
     return db.query(User).filter(User.id == id).first()
+
+def update_photo(db: Session, id: int, photo_url: str):
+    db_user = db.query(User).filter(User.id == id).first()
+    db_user.photo_url = photo_url
+    db.commit()
+    db.refresh(db_user)
+    return db_user

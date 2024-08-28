@@ -1,46 +1,55 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { verifySession } from '../services/authService';
-import { getUser } from '../services/userService';
-
+import { logout } from '../services/authService';
 interface AuthContextProps {
   isAuthenticated: boolean;
   roleId: number | null;
+  user: any | null;
   loading: boolean;
   loginUser: () => void;
+  logoutUser: () => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [user, setUser] = useState<any | null>(null);
   const [roleId, setRoleId] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const loginUser = () => {
-    setIsAuthenticated(true);
-    checkSession();  // Verificamos la sesión inmediatamente después del login
+    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    if (storedUser && storedUser.role_id) {
+      setUser(storedUser);
+      setRoleId(storedUser.role_id);
+      setIsAuthenticated(true);
+    }
+    setLoading(false);
   };
 
-  const checkSession = async () => {
-    setLoading(true);
-    try {
-      await verifySession();
-      const user = await getUser(); 
-      setRoleId(user.role_id);
-      setIsAuthenticated(true);
-    } catch {
-      setIsAuthenticated(false);
-    } finally {
-      setLoading(false);
-    }
+  const logoutUser = () => {
+    setIsAuthenticated(false);
+    setUser(null);
+    setRoleId(null);
+    localStorage.removeItem('user');
+    logout();
   };
 
   useEffect(() => {
-    checkSession();
+    loginUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, roleId, loading, loginUser }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        roleId,
+        user,
+        loading,
+        loginUser,
+        logoutUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

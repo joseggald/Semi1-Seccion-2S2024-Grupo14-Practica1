@@ -5,30 +5,42 @@ import ProfileImage from './ProfileImage';
 import home from '../../assets/header/home.svg';
 import discover from '../../assets/header/discover.svg';
 import search from '../../assets/header/search.svg';
-import logoApp from '../../assets/login/logo_app.jpg';
 import { useAuth } from '../../context/AuthContext';
 
 const Header = () => {
   const location = useLocation();
+  const [photo, setPhoto] = useState('');
   const { roleId } = useAuth();
   const [username, setUsername] = useState('');
+  
+  const fetchUser = () => {
+    try {
+      const user = localStorage.getItem('user');
+      if (user) {
+        const parsedUser = JSON.parse(user);
+        if (parsedUser && parsedUser.email) {
+          setUsername(parsedUser.email);
+          setPhoto(parsedUser.photo_url);
+        }
+      }
+    } catch (error) {
+      console.error("Error parsing user data from localStorage:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchUser = () => {
-      try {
-        const user = localStorage.getItem('user');
-        if (user) {
-          const parsedUser = JSON.parse(user);
-          if (parsedUser && parsedUser.email) {
-            setUsername(parsedUser.email);
-          }
-        }
-      } catch (error) {
-        console.error("Error parsing user data from localStorage:", error);
-      }
+    fetchUser();
+
+    // Add event listener to listen to changes in localStorage
+    const handleStorageChange = () => {
+      fetchUser();
     };
 
-    fetchUser();
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const isActive = (path) => location.pathname === path;
@@ -79,7 +91,7 @@ const Header = () => {
       <div className="flex items-center space-x-3">
         <span className="text-white">{username}</span>
         <ProfileImage
-          src={logoApp}
+          src={photo}
           alt="Profile"
         />
       </div>
