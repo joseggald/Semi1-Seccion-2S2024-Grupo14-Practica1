@@ -6,7 +6,6 @@ const UserSession = require('../models/UserSession');
 
 exports.registerUser = async (req, res) => {
     const {first_name, last_name, email, password, role_id, photo_url, date_of_birth} = req.body;
-
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         createdOn = new Date();
@@ -41,15 +40,10 @@ exports.loginUser = async (req, res) => {
 exports.verifySession = async (req, res) => {
     const token = req.cookies.session_token;
     try {
-
         const session = new UserSession();
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const foundSession = await session.find(decoded.id, token);
-
-        if (!foundSession) {
-            return res.status(401).json({ message: 'Invalid session' });
-        }
-
+        if (!foundSession) return res.status(401).json({ message: 'Invalid session' });
         res.json({ message: 'Session is valid' });
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -62,11 +56,7 @@ exports.logoutUser = async (req, res) => {
         const session = new UserSession();
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const foundSession = await session.find(decoded.id, token);
-
-        if (!foundSession) {
-            return res.status(401).json({ message: 'Invalid session' });
-        }
-
+        if (!foundSession) return res.status(401).json({ message: 'Invalid session' });
         await session.delete(foundSession.id);
         res.clearCookie('session_token');
         res.json({ message: 'Logged out successfully' });
@@ -81,11 +71,7 @@ exports.getUserById = async (req, res) => {
         const session = new UserSession();
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const foundSession = await session.find(decoded.id, token);
-
-        if (!foundSession) {
-            return res.status(401).json({ message: 'Invalid session' });
-        }
-
+        if (!foundSession) return res.status(401).json({ message: 'Invalid session' });
         const user = new User();
         const foundUser = await user.findById(decoded.id);
         res.json(foundUser);
