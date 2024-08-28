@@ -92,6 +92,30 @@ class Song {
             throw new Error(error);
         }
     }
+
+    async getAllUser(user_id) {
+        const query = `
+            SELECT 
+                s.*, 
+                CASE WHEN f.user_id IS NOT NULL THEN true ELSE false END AS is_favorite
+            FROM 
+                songs s 
+            LEFT JOIN 
+                favorites f 
+            ON 
+                s.id = f.song_id 
+                AND f.user_id = $1
+        `;
+        const values = [user_id];
+        
+        try {
+            const result = await pool.query(query, values);
+            return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+    
 }
 
 module.exports = Song;

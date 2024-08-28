@@ -116,7 +116,7 @@ exports.getAllAdmin = async (req, res) => {
 
 exports.getByNameAdmin = async (req, res) => {
     try {
-        const { name } = req.params;
+        const { name } = req.body;
         const song = new Song();
         const foundSongs = await song.getByNameAdmin(name);
         res.status(200).json(foundSongs);
@@ -127,7 +127,7 @@ exports.getByNameAdmin = async (req, res) => {
 
 exports.getByAuthorAdmin = async (req, res) => {
     try {
-        const { author } = req.params;
+        const { author } = req.body;
         const song = new Song();
         const foundSongs = await song.getByAuthorAdmin(author);
         res.status(200).json(foundSongs);
@@ -136,4 +136,18 @@ exports.getByAuthorAdmin = async (req, res) => {
     }
 };
 
-// getting songs for user 
+// getting songs for user and adding a parameter to show if the song is in favorites
+exports.getAllUser = async (req, res) => {
+    const token = req.cookies.session_token;
+    try {
+        const session = new UserSession();
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const foundSession = await session.find(decoded.id, token);
+        if (!foundSession) return res.status(401).json({ message: 'Invalid session' });
+        const song = new Song();
+        const songs = await song.getAllUser(decoded.id);
+        res.status(200).json(songs);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
