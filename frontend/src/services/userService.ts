@@ -12,3 +12,13 @@ export const getUser = async () => {
     throw error;
   }
 };
+
+export const updatePhoto = async (photoUrl: string) => {
+  try {
+    const response = await axios.put(`${API_URL}/users/update_photo`, { photo_url: photoUrl }, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+};

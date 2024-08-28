@@ -10,8 +10,14 @@ const Dashboard: React.FC = () => {
       <Sidebar />
       <div className="flex flex-col flex-grow bg-[#111111]">
         <Header />
-        <main className="flex-grow p-6 bg-[#333842] rounded-xl mb-2 mr-4 ">
-          <Outlet /> 
+        <main
+          className="flex-grow bg-[#333842] rounded-xl mb-2 mr-4 overflow-y-auto custom-scrollbar"
+          style={{
+            height: '477px',
+            padding: '20px',
+          }}
+        >
+          <Outlet />
         </main>
         <Songbar />
       </div>

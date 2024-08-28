@@ -7,30 +7,35 @@ import svg1 from '../../assets/login/forms1.svg';
 import logoApp from '../../assets/login/logo_app.jpg';
 import { login } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
+import SuccessMessage from '../../components/Utility/SuccessMessage'; // Importa el mensaje
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
-  const { loginUser, roleId } = useAuth();
+  const { loginUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
 
     try {
-      const user=await login(email, password);
-      loginUser();
-      console.log(user);
-      localStorage.setItem('user', JSON.stringify(user));
+      const user = await login(email, password);
+      localStorage.setItem('user', JSON.stringify(user)); 
+      loginUser(); 
+
+      setSuccess('Login successful! Redirecting...');
+
       setTimeout(() => {
-        if (roleId === 1) {
+        if (user.role_id === 1) {
           navigate('/administrator', { replace: true });
         } else {
           navigate('/home', { replace: true });
         }
-      }, 100);
+      }, 2000);  // Aumenta el tiempo para asegurar que el mensaje se vea.
     } catch (err) {
       setError('Login failed. Please check your credentials.');
     }
@@ -65,6 +70,7 @@ const Login: React.FC = () => {
               {error}
             </div>
           )}
+          {success && <SuccessMessage message={success} />} 
           <form onSubmit={handleSubmit} className="space-y-6">
             <FormInput
               label="Email"
@@ -87,7 +93,7 @@ const Login: React.FC = () => {
           <div className="mt-6 text-center">
             <p className="text-gray-400">Don't have an account?</p>
             <button
-              onClick={() => navigate('/register')} // Navegar al registro
+              onClick={() => navigate('/register')} 
               className="text-accent hover:underline mt-2"
             >
               Register Now
