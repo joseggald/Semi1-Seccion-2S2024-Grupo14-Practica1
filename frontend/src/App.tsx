@@ -13,7 +13,7 @@ import Search from './views/Dashboard/Search/Search';
 import Administrator from './views/Dashboard/Administrator/Administrator';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { SongProvider } from './context/SongContext';
 const ProtectedRoute = ({ children, roleRequired }: { children: React.ReactNode, roleRequired?: number }) => {
   const { isAuthenticated, loading, roleId } = useAuth();
 
@@ -63,6 +63,7 @@ const AppRoutes = () => {
   }
 
   return (
+    <SongProvider>
     <Routes>
       <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login />} />
       <Route path="/register" element={isAuthenticated ? <Navigate to="/" /> : <Register />} />
@@ -86,6 +87,7 @@ const AppRoutes = () => {
 
       <Route path="*" element={<Navigate to={isAuthenticated ? (roleId === 1 ? "/administrator" : "/home") : "/login"} />} />
     </Routes>
+    </SongProvider>
   );
 };
 

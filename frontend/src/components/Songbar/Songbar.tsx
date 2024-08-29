@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useSong } from '../../context/SongContext';
 import favIcon from '../../assets/songbar/fav.svg';
 import nextLeftIcon from '../../assets/songbar/next_left.svg';
 import nextRightIcon from '../../assets/songbar/next_right.svg';
@@ -9,11 +10,10 @@ import volumenIcon from '../../assets/songbar/volumen.svg';
 import loadingSpinner from '../../assets/songbar/loading_spinner.svg';
 
 const Songbar = () => {
+  const { currentSong, isPlaying, playSong, nextSong, prevSong, setIsPlaying } = useSong();
   const audioRef = useRef(null);
   const progressRef = useRef(null);
 
-  const [currentSong, setCurrentSong] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -22,11 +22,8 @@ const Songbar = () => {
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
-    const savedSong = JSON.parse(localStorage.getItem('currentSong'));
-
-    if (savedSong) {
-      setCurrentSong(savedSong);
-      const audio = new Audio(savedSong.mp3_file);
+    if (currentSong) {
+      const audio = new Audio(currentSong.mp3_file);
       audioRef.current = audio;
 
       const handleLoadedMetadata = () => {
@@ -53,8 +50,7 @@ const Songbar = () => {
 
       const handleEnded = () => {
         setIsPlaying(false);
-        setCurrentTime(0);
-        setProgress(0);
+        nextSong();
       };
 
       const handleError = (e) => {
@@ -81,7 +77,7 @@ const Songbar = () => {
         audio.removeEventListener('error', handleError);
       };
     }
-  }, [isPlaying, isDragging]);
+  }, [currentSong, isPlaying, isDragging, nextSong, setIsPlaying]);
 
   const togglePlayPause = () => {
     if (audioRef.current) {
@@ -94,25 +90,6 @@ const Songbar = () => {
           console.error('Error al iniciar la reproducción:', e);
         });
         setIsPlaying(true);
-      }
-    }
-  };
-
-  const handleSkip = async (seconds) => {
-    if (audioRef.current) {
-      const audio = audioRef.current;
-      const newTime = Math.min(Math.max(0, audio.currentTime + seconds), duration);
-      setIsLoading(true);
-      setIsPlaying(false);
-      audio.pause();
-      audio.currentTime = newTime;
-      try {
-        await audio.play();
-        setIsPlaying(true);
-      } catch (e) {
-        console.error('Error al saltar en la pista:', e);
-      } finally {
-        setIsLoading(false);
       }
     }
   };
@@ -190,7 +167,7 @@ const Songbar = () => {
           src={nextLeftIcon}
           alt="Previous Icon"
           className="w-7 h-7 cursor-pointer"
-          onClick={() => handleSkip(-15)}
+          onClick={prevSong}
         />
         <div className="relative">
           {isLoading && (
@@ -212,7 +189,7 @@ const Songbar = () => {
           src={nextRightIcon}
           alt="Next Icon"
           className="w-7 h-7 cursor-pointer"
-          onClick={() => handleSkip(15)}
+          onClick={nextSong}
         />
         <img
           src={playlistIcon}
