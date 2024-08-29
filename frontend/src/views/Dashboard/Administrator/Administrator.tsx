@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSong } from '../../../context/SongContext';
 import { getAllSongs, deleteSong, createSong, updateSong } from '../../../services/songService';
 import playIcon from '../../../assets/songbar/play.svg';
 import editIcon from '../../../assets/songbar/edit.svg';
@@ -8,7 +9,8 @@ import ConfirmationModal from '../../../components/Utility/ConfirmationModal';
 import SongModal from '../../../components/Utility/SongModal';
 
 const Administrator: React.FC = () => {
-  const [songs, setSongs] = useState([]);
+  const { setSongs, playSong } = useSong();
+  const [songs, setLocalSongs] = useState([]);
   const [filteredSongs, setFilteredSongs] = useState([]); // Estado para manejar las canciones filtradas
   const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
   const [newSong, setNewSong] = useState({
@@ -29,15 +31,16 @@ const Administrator: React.FC = () => {
     const fetchSongs = async () => {
       try {
         const data = await getAllSongs();
-        setSongs(data);
+        setLocalSongs(data);
         setFilteredSongs(data); // Inicialmente, mostrar todas las canciones
+        setSongs(data); // Pasar las canciones al contexto global
       } catch (error) {
         console.error('Failed to fetch songs:', error);
       }
     };
 
     fetchSongs();
-  }, []);
+  }, [setSongs]);
 
   // Filtrar canciones según el término de búsqueda
   useEffect(() => {
@@ -52,7 +55,8 @@ const Administrator: React.FC = () => {
     try {
       if (songToDelete) {
         await deleteSong(songToDelete.id);
-        setSongs(songs.filter(song => song.id !== songToDelete.id));
+        setLocalSongs(songs.filter(song => song.id !== songToDelete.id));
+        setFilteredSongs(filteredSongs.filter(song => song.id !== songToDelete.id));
         setShowDeleteConfirmation(false);
         setSongToDelete(null);
         setSuccessMessage('Song deleted successfully!');
@@ -82,9 +86,8 @@ const Administrator: React.FC = () => {
     }
   };
 
-  const handlePlaySong = (song) => {
-    // Guardar la canción en el localStorage y actualizar el estado
-    localStorage.setItem('currentSong', JSON.stringify(song));
+  const handlePlaySong = (song, index) => {
+    playSong(index);
     setSuccessMessage(`Playing ${song.name} by ${song.artist_name}`);
   };
 
@@ -140,7 +143,7 @@ const Administrator: React.FC = () => {
               <span className="col-span-3 truncate">{song.artist_name}</span>
               <span className="col-span-2 text-center">{song.duration}</span>
               <div className="col-span-2 flex justify-center space-x-4">
-                <button onClick={() => handlePlaySong(song)} className="text-green-500">
+                <button onClick={() => handlePlaySong(song, index)} className="text-green-500">
                   <img src={playIcon} alt="Play" className="w-6 h-6" />
                 </button>
                 <button 
