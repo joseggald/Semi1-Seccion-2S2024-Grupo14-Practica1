@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import timedelta
-import re
+from typing import Optional
 class MessageResponse(BaseModel):
     message: str
 
@@ -43,3 +43,12 @@ class SongRead(SongCreate):
         json_encoders = {
             timedelta: lambda v: str(v)  # Convert timedelta to string
         }
+
+class PlaylistCreate(BaseModel):
+    #user_id: int
+    name: str
+    description:str
+    photo: Optional[str] = None
+
+class Add_Delete_Song(BaseModel):
+    song_id: str
