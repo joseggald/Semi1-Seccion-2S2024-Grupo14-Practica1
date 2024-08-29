@@ -2,10 +2,12 @@ from fastapi import FastAPI
 from app.api import users
 from app.db import base, session
 from app.core.config import settings
+from app.api import favorite_api
 
 app = FastAPI( title = settings.PROJECT_NAME)
 
 app.include_router(users.router, prefix="/users", tags=["Users"])
+app.include_router(favorite_api.router, prefix="/favorites", tags=["Favorites"])
 
 @app.on_event("startup")
 def on_startup():
