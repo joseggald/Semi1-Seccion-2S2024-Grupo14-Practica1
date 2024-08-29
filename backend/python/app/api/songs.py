@@ -70,7 +70,7 @@ def get_song_by_id(id:int, db: Session = Depends(get_db)):
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal Server Error")
     
-@router.get("/get_all", response_model=List[SongRead])
+@router.get("/get_all_admin", response_model=List[SongRead])
 def get_songs(db: Session = Depends(get_db)):
     song_service = SongService()
     

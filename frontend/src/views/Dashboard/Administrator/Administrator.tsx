@@ -141,7 +141,7 @@ const Administrator: React.FC = () => {
                 <span className="truncate">{song.name}</span>
               </div>
               <span className="col-span-3 truncate">{song.artist_name}</span>
-              <span className="col-span-2 text-center">{song.duration}</span>
+              <span className="col-span-2 text-center">"pene"</span>
               <div className="col-span-2 flex justify-center space-x-4">
                 <button onClick={() => handlePlaySong(song, index)} className="text-green-500">
                   <img src={playIcon} alt="Play" className="w-6 h-6" />

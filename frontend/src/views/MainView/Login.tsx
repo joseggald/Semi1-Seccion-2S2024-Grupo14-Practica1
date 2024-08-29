@@ -25,6 +25,7 @@ const Login: React.FC = () => {
     try {
       const user = await login(email, password);
       localStorage.setItem('user', JSON.stringify(user)); 
+      localStorage.setItem('roleId', user.role_id.toString());
       loginUser(); 
 
       setSuccess('Login successful! Redirecting...');

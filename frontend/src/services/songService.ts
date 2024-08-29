@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:8000';
 
 export const getAllSongs = async () => {
   try {
-    const response = await axios.get(`${API_URL}/songs/get_all`, { withCredentials: true });
+    const response = await axios.get(`${API_URL}/songs/get_all_admin`, { withCredentials: true });
     return response.data;
   } catch (error) {
     handleError(error);

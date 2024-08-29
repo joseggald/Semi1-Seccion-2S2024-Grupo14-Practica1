@@ -15,7 +15,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SongProvider } from './context/SongContext';
 const ProtectedRoute = ({ children, roleRequired }: { children: React.ReactNode, roleRequired?: number }) => {
-  const { isAuthenticated, loading, roleId } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  const roleId = localStorage.getItem('roleId') ? parseInt(localStorage.getItem('roleId')!) : null;
 
   if (loading) {
     return <div>Loading...</div>;
@@ -33,7 +34,8 @@ const ProtectedRoute = ({ children, roleRequired }: { children: React.ReactNode,
 };
 
 const AppRoutes = () => {
-  const { isAuthenticated, loading, roleId } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  const roleId = localStorage.getItem('roleId') ? parseInt(localStorage.getItem('roleId')!) : null;
   const [redirectPath, setRedirectPath] = useState<string | null>(null);
   const navigate = useNavigate();
 

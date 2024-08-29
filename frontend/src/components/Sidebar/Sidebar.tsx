@@ -5,11 +5,10 @@ import favoritesIcon from '../../assets/sidebar/favs.svg';
 import playlistIcon from '../../assets/sidebar/playlist.svg';
 import profileIcon from '../../assets/sidebar/profile.svg';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 
 const Sidebar = () => {
   const location = useLocation();
-  const { roleId } = useAuth();
+  const roleId = localStorage.getItem('roleId') ? parseInt(localStorage.getItem('roleId')!) : null;
 
   return (
     <aside className="w-64 h-screen bg-[#111111] shadow-lg p-6 flex flex-col justify-between">
