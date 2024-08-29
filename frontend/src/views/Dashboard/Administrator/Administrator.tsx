@@ -26,7 +26,6 @@ const Administrator: React.FC = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [songToDelete, setSongToDelete] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
-
   useEffect(() => {
     const fetchSongs = async () => {
       try {
@@ -141,7 +140,10 @@ const Administrator: React.FC = () => {
                 <span className="truncate">{song.name}</span>
               </div>
               <span className="col-span-3 truncate">{song.artist_name}</span>
-              <span className="col-span-2 text-center">"pene"</span>
+              <span className="col-span-2 text-center">
+                {song.duration.minutes.toString().padStart(2, '0')}:
+                {song.duration.seconds.toString().padStart(2, '0')}
+              </span>
               <div className="col-span-2 flex justify-center space-x-4">
                 <button onClick={() => handlePlaySong(song, index)} className="text-green-500">
                   <img src={playIcon} alt="Play" className="w-6 h-6" />
