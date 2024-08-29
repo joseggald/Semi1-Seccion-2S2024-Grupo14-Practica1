@@ -8,8 +8,8 @@ const app = express();
 
 app.use(cors(
     {
-        origin: 'http://localhost:5173',  // Cambia esto al origen de tu frontend
-        credentials: true  // Habilita el envío de cookies
+        origin: 'http://localhost:5173',
+        credentials: true
     }
 ));
 
