@@ -6,13 +6,13 @@ import playIcon from '../../assets/songbar/play.svg';
 import pauseIcon from '../../assets/songbar/pause.svg';
 import playlistIcon from '../../assets/songbar/playlist.svg';
 import volumenIcon from '../../assets/songbar/volumen.svg';
-import exampleAlbumCover from '../../assets/login/logo_app.jpg';
-import loadingSpinner from '../../assets/songbar/loading_spinner.svg'; // Asegúrate de tener un ícono de carga
+import loadingSpinner from '../../assets/songbar/loading_spinner.svg';
 
 const Songbar = () => {
   const audioRef = useRef(null);
   const progressRef = useRef(null);
 
+  const [currentSong, setCurrentSong] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -22,91 +22,98 @@ const Songbar = () => {
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
-    const audio = new Audio('https://multimedia-semi1-seccion-g14.s3.amazonaws.com/canciones/Alvaro+Diaz%2C+Sen+Senra+-+1000CANCIONES+(Official+Video).mp3');
-    audio.preload = 'auto';
-    audio.volume = volume;
-    audioRef.current = audio;
+    const savedSong = JSON.parse(localStorage.getItem('currentSong'));
 
-    const handleLoadedMetadata = () => {
-      setDuration(audio.duration);
-    };
+    if (savedSong) {
+      setCurrentSong(savedSong);
+      const audio = new Audio(savedSong.mp3_file);
+      audioRef.current = audio;
 
-    const handleTimeUpdate = () => {
-      if (!isDragging) {
-        setCurrentTime(audio.currentTime);
-        setProgress((audio.currentTime / audio.duration) * 100);
-      }
-    };
+      const handleLoadedMetadata = () => {
+        setDuration(audio.duration);
+      };
 
-    const handleCanPlay = () => {
-      setIsLoading(false);
-      if (isPlaying) {
-        audio.play();
-      }
-    };
+      const handleTimeUpdate = () => {
+        if (!isDragging) {
+          setCurrentTime(audio.currentTime);
+          setProgress((audio.currentTime / audio.duration) * 100);
+        }
+      };
 
-    const handleWaiting = () => {
-      setIsLoading(true);
-    };
+      const handleCanPlay = () => {
+        setIsLoading(false);
+        if (isPlaying) {
+          audio.play();
+        }
+      };
 
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setCurrentTime(0);
-      setProgress(0);
-    };
+      const handleWaiting = () => {
+        setIsLoading(true);
+      };
 
-    const handleError = (e) => {
-      console.error('Error al reproducir el audio:', e);
-      setIsLoading(false);
-      setIsPlaying(false);
-    };
+      const handleEnded = () => {
+        setIsPlaying(false);
+        setCurrentTime(0);
+        setProgress(0);
+      };
 
-    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('canplay', handleCanPlay);
-    audio.addEventListener('waiting', handleWaiting);
-    audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('error', handleError);
+      const handleError = (e) => {
+        console.error('Error al reproducir el audio:', e);
+        setIsLoading(false);
+        setIsPlaying(false);
+      };
 
-    return () => {
-      audio.pause();
-      audio.src = '';
-      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('canplay', handleCanPlay);
-      audio.removeEventListener('waiting', handleWaiting);
-      audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('error', handleError);
-    };
-  }, [volume]);
+      audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.addEventListener('timeupdate', handleTimeUpdate);
+      audio.addEventListener('canplay', handleCanPlay);
+      audio.addEventListener('waiting', handleWaiting);
+      audio.addEventListener('ended', handleEnded);
+      audio.addEventListener('error', handleError);
+
+      return () => {
+        audio.pause();
+        audio.src = '';
+        audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        audio.removeEventListener('timeupdate', handleTimeUpdate);
+        audio.removeEventListener('canplay', handleCanPlay);
+        audio.removeEventListener('waiting', handleWaiting);
+        audio.removeEventListener('ended', handleEnded);
+        audio.removeEventListener('error', handleError);
+      };
+    }
+  }, [isPlaying, isDragging]);
 
   const togglePlayPause = () => {
-    const audio = audioRef.current;
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-    } else {
-      audio.play().catch((e) => {
-        console.error('Error al iniciar la reproducción:', e);
-      });
-      setIsPlaying(true);
+    if (audioRef.current) {
+      const audio = audioRef.current;
+      if (isPlaying) {
+        audio.pause();
+        setIsPlaying(false);
+      } else {
+        audio.play().catch((e) => {
+          console.error('Error al iniciar la reproducción:', e);
+        });
+        setIsPlaying(true);
+      }
     }
   };
 
   const handleSkip = async (seconds) => {
-    const audio = audioRef.current;
-    const newTime = Math.min(Math.max(0, audio.currentTime + seconds), duration);
-    setIsLoading(true);
-    setIsPlaying(false);
-    audio.pause();
-    audio.currentTime = newTime;
-    try {
-      await audio.play();
-      setIsPlaying(true);
-    } catch (e) {
-      console.error('Error al saltar en la pista:', e);
-    } finally {
-      setIsLoading(false);
+    if (audioRef.current) {
+      const audio = audioRef.current;
+      const newTime = Math.min(Math.max(0, audio.currentTime + seconds), duration);
+      setIsLoading(true);
+      setIsPlaying(false);
+      audio.pause();
+      audio.currentTime = newTime;
+      try {
+        await audio.play();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error('Error al saltar en la pista:', e);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -122,7 +129,7 @@ const Songbar = () => {
   };
 
   const handleProgressMouseUp = async (e) => {
-    if (isDragging) {
+    if (isDragging && audioRef.current) {
       updateProgress(e);
       setIsDragging(false);
       const audio = audioRef.current;
@@ -141,13 +148,15 @@ const Songbar = () => {
   };
 
   const updateProgress = (e) => {
-    const audio = audioRef.current;
-    const rect = progressRef.current.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const newTime = (clickX / rect.width) * duration;
-    audio.currentTime = newTime;
-    setCurrentTime(newTime);
-    setProgress((newTime / duration) * 100);
+    if (audioRef.current) {
+      const audio = audioRef.current;
+      const rect = progressRef.current.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const newTime = (clickX / rect.width) * duration;
+      audio.currentTime = newTime;
+      setCurrentTime(newTime);
+      setProgress((newTime / duration) * 100);
+    }
   };
 
   const handleVolumeChange = (e) => {
@@ -214,13 +223,17 @@ const Songbar = () => {
 
       <div className="flex-grow mx-6 flex items-center space-x-4">
         <img
-          src={exampleAlbumCover}
+          src={currentSong ? currentSong.photo : null}
           alt="Album Cover"
           className="w-12 h-12 object-cover rounded-lg"
         />
         <div className="text-white leading-tight min-w-0">
-          <div className="text-base font-semibold truncate">1000CANCIONES</div>
-          <div className="text-xs text-gray-400 truncate">Álvaro Díaz, Sen Senra</div>
+          <div className="text-base font-semibold truncate">
+            {currentSong ? currentSong.name : '--'}
+          </div>
+          <div className="text-xs text-gray-400 truncate">
+            {currentSong ? currentSong.artist_name : '--'}
+          </div>
         </div>
         <div
           className="flex-grow mx-4 relative cursor-pointer"

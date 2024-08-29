@@ -48,9 +48,7 @@ const Header = () => {
   return (
     <header className="flex justify-between items-center w-full px-6 py-6 bg-[#111111] shadow-lg">
       <div className="flex items-center space-x-4 ml-4">
-        {roleId === 2 && (
-          <>
-            <Link to="/home">
+      <Link to="/home">
               <NavItem
                 iconSrc={home}
                 iconAlt="Home Icon"
@@ -72,8 +70,6 @@ const Header = () => {
                 isActive={isActive('/discover')}
               />
             </Link>
-          </>
-        )}
         <div className="relative">
           <input
             type="text"

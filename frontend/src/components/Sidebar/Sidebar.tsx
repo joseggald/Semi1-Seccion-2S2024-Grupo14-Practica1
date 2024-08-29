@@ -20,6 +20,30 @@ const Sidebar = () => {
         </div>
 
         {roleId === 1 && (
+          <>
+           <Link to="/favourites">
+              <NavItem
+                iconSrc={favoritesIcon}
+                iconAlt="Favorites Icon"
+                iconWidth={24}
+                iconHeight={24}
+                text="My Favorites"
+                textColor={`text-[var(--fg-primary,#E0E0E0)] ${location.pathname === '/favourites' ? 'bg-[#2b2e37]' : ''}`}
+                isActive={location.pathname === '/favourites'}
+              />
+            </Link>
+
+            <Link to="/playlists">
+              <NavItem
+                iconSrc={playlistIcon}
+                iconAlt="Playlist Icon"
+                iconWidth={24}
+                iconHeight={24}
+                text="My Playlist"
+                textColor={`text-[var(--fg-secondary,#898989)] ${location.pathname === '/playlists' ? 'bg-[#2b2e37]' : ''}`}
+                isActive={location.pathname === '/playlists'}
+              />
+            </Link>
           <Link to="/administrator">
             <NavItem
               iconSrc={playlistIcon}
@@ -31,6 +55,7 @@ const Sidebar = () => {
               isActive={location.pathname === '/administrator'}
             />
           </Link>
+          </>
         )}
 
         {roleId === 2 && (
