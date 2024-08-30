@@ -23,7 +23,7 @@ router.post("/get_by_name_admin", getByNameAdmin);
 router.post("/get_by_author_admin", getByAuthorAdmin);
 router.post("/add_to_favorites", addToFavorites);
 router.delete("/remove_from_favorites", removeFromFavorites);
-router.get("/get_favorites_user", getFavoritesUser);
-router.get("/get_all_user", getAllUser);
+router.post("/get_favorites_user", getFavoritesUser);
+router.post("/get_all_user", getAllUser);
 
 module.exports = router;

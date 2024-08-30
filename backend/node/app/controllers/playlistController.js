@@ -4,7 +4,7 @@ const Playlist = require('../models/Playlist');
 const UserSession = require('../models/UserSession');
 
 exports.createPlaylist = async (req, res) => {
-    const token = req.cookies.session_token;
+    const{ token } = req.body;
     {
         try {
             
@@ -25,7 +25,7 @@ exports.createPlaylist = async (req, res) => {
 
 
 exports.addSongToPlaylist = async (req, res) => {
-    const token = req.cookies.session_token;
+    const{ token } = req.body;
     {
         try {
             const { playlist_id, song_id } = req.body;
@@ -43,7 +43,7 @@ exports.addSongToPlaylist = async (req, res) => {
 };
 
 exports.deleteSongFromPlaylist = async (req, res) => {
-    const token = req.cookies.session_token;
+    const{ token } = req.body;
     {
         try {
             const { playlist_id, song_id } = req.body;
@@ -61,7 +61,7 @@ exports.deleteSongFromPlaylist = async (req, res) => {
 };
 
 exports.getSongsFromPlaylist = async (req, res) => {
-    const token = req.cookies.session_token;
+    const{ token } = req.body;
     {
         try {
             const { playlist_id } = req.body;
@@ -79,7 +79,7 @@ exports.getSongsFromPlaylist = async (req, res) => {
 };
 
 exports.deletePlaylist = async (req, res) => {
-    const token = req.cookies.session_token;
+    const{ token } = req.body;
     {
         try {
             const { playlist_id } = req.body;
@@ -107,7 +107,7 @@ exports.getPlaylistsAdmin = async (req, res) => {
 };
 
 exports.getPlaylistsUser = async (req, res) => {
-    const token = req.cookies.session_token;
+    const{ token } = req.body;
     {
         try {
             const session = new UserSession();
@@ -124,7 +124,7 @@ exports.getPlaylistsUser = async (req, res) => {
 };
 
 exports.editPlaylist = async (req, res) => {
-    const token = req.cookies.session_token;
+    const{ token } = req.body;
     {
         try {
             const { playlist_id, name, description } = req.body;

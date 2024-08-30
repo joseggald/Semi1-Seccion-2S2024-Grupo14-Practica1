@@ -8,12 +8,12 @@ exports.registerUser = async (req, res) => {
     const {first_name, last_name, email, password, role_id, photo_url, date_of_birth} = req.body;
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        createdOn = new Date();
+        const createdOn = new Date();
         const user = new User(first_name, last_name, email, hashedPassword, createdOn, createdOn, role_id, photo_url, date_of_birth);
         await user.save();
-        res.status(201).json({message: 'User created successfully'});
+        res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
-        res.status(400).json({error: error.message });   
+        res.status(400).json({ error: error.message });   
     }
 };
 
@@ -22,6 +22,7 @@ exports.loginUser = async (req, res) => {
     try {
         const user = new User();
         const foundUser = await user.findByEmail(email);
+        console.log('usuario encontrado:',foundUser);
 
         if (!foundUser || !(await bcrypt.compare(password, foundUser.hashed_password))) {
             return res.status(400).json({ message: 'Incorrect email or password' });
@@ -29,17 +30,18 @@ exports.loginUser = async (req, res) => {
 
         console.log(process.env.SECRET_KEY);
         const token = jwt.sign({ id: foundUser.id, email: foundUser.email }, process.env.SECRET_KEY, { expiresIn: '190m' });
+        console.log('token:',token);
         const session = new UserSession(foundUser.id, token);
         await session.save();
-        res.cookie('session_token', token, { httpOnly: true, secure: true, sameSite: 'Lax' });
-        res.json({ message: 'Logged in successfully' });
+        res.cookie('session_token', token, { httpOnly: true, secure: false, sameSite: 'Strict' });
+        res.json({ message: 'Logged in successfully', token });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
 
 exports.verifySession = async (req, res) => {
-    const token = req.cookies.session_token;
+    const { token } = req.body;
     try {
         const session = new UserSession();
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
@@ -52,7 +54,7 @@ exports.verifySession = async (req, res) => {
 };
 
 exports.logoutUser = async (req, res) => {
-    const token = req.cookies.session_token;
+    const { token } = req.body;
     try {
         const session = new UserSession();
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
@@ -67,7 +69,8 @@ exports.logoutUser = async (req, res) => {
 };
 
 exports.getUserById = async (req, res) => {
-    const token = req.cookies.session_token;
+    const { token } = req.body;
+    console.log('token get user:',token);
     try {
         const session = new UserSession();
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
@@ -77,12 +80,12 @@ exports.getUserById = async (req, res) => {
         const foundUser = await user.findById(decoded.id);
         res.json(foundUser);
     } catch (error) {
-        error.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message }); // Corregido: res.status en lugar de error.status
     }
-}
+};
 
 exports.updatePhoto = async (req, res) => {
-    const token = req.cookies.session_token;
+    const { token } = req.body;
     try {
         const session = new UserSession();
         const decoded = jwt.verify(token, process.env.SECRET_KEY);

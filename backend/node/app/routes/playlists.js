@@ -17,7 +17,7 @@ router.post("/add-song", addSongToPlaylist);
 router.delete("/delete-song", deleteSongFromPlaylist);
 router.post("/get-songs", getSongsFromPlaylist);
 router.get("/get-all-admin", getPlaylistsAdmin);
-router.get("/get-all-user", getPlaylistsUser);
+router.post("/get-all-user", getPlaylistsUser);
 router.put("/edit", editPlaylist);
 
 module.exports = router;

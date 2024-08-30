@@ -4,9 +4,9 @@ const { registerUser, loginUser, verifySession, logoutUser, getUserById, updateP
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.get('/verify_session', verifySession);
+router.post('/verify_session', verifySession);
 router.post('/logout', logoutUser);
-router.get('/get_user_byId', getUserById);
+router.post('/get_user_byId', getUserById);
 router.put('/update_photo', updatePhoto);
 
 module.exports = router;
