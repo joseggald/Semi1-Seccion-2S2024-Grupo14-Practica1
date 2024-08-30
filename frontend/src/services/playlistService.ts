@@ -2,7 +2,7 @@ import axios from 'axios';
 import { handleErrorSongs } from './handleError';
 import { uploadImageToS3 } from './s3Service'; // Importa la función de subida a S3
 
-const API_URL = 'http://localhost:8000';
+const API_URL = 'http://18.208.115.67:8000';
 
 export const createPlaylist = async (playlistData: any, imageFile: File | null) => {
   try {
