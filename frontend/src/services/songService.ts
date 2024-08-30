@@ -13,6 +13,7 @@ export const getAllSongs = async () => {
   }
 };
 
+
 export const createSong = async (songData: any) => {
   try {
     const response = await axios.post(`${API_URL}/songs/create`, songData, { withCredentials: true });
@@ -39,6 +40,36 @@ export const updateSong = async (songId: string, updatedData: any) => {
     return response.data;
   } catch (error) {
     handleErrorSongs(error);
+    throw error;
+  }
+};
+
+export const getMyFavorites = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/songs/get_all_user`, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+};
+
+export const addFavorite = async (songId: string) => {
+  try {
+    const response = await axios.post(`${API_URL}/songs/add_to_favorites`, { song_id: songId }, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+};
+
+export const removeFavorite = async (songId: string) => {
+  try {
+    const response = await axios.delete(`${API_URL}/songs/remove_from_favorites`, { data: { song_id: songId }, withCredentials: true });
+    return response.data;
+  } catch (error) {
+    handleError(error);
     throw error;
   }
 };

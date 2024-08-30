@@ -1,6 +1,6 @@
 import React from 'react';
 import { usePlayer } from '../../context/PlayerContext';
-import favIcon from '../../assets/songbar/fav.svg';
+import favIcon from '../../assets/songbar/favFalse.svg';
 import nextLeftIcon from '../../assets/songbar/next_left.svg';
 import nextRightIcon from '../../assets/songbar/next_right.svg';
 import playIcon from '../../assets/songbar/play.svg';
@@ -45,7 +45,7 @@ const Songbar: React.FC = () => {
   return (
     <div className="bg-[#333842] bg-opacity-80 mb-3 mr-3 flex justify-between items-center p-4 rounded-xl shadow-lg backdrop-filter backdrop-blur-lg select-none">
       <div className="flex items-center space-x-5">
-        <img src={favIcon} alt="Favorite Icon" className="w-7 h-7 cursor-pointer transition-transform transform hover:scale-110 active:scale-95" />
+        <img src={favIcon} alt="Favorite Icon" className="hidden w-7 h-7 cursor-pointer transition-transform transform hover:scale-110 active:scale-95" />
         <img 
           src={nextLeftIcon} 
           alt="Previous Icon" 
@@ -66,7 +66,7 @@ const Songbar: React.FC = () => {
           className={`w-7 h-7 cursor-pointer transition-transform transform hover:scale-110 active:scale-95 ${!hasNextTrack ? 'opacity-50 cursor-not-allowed' : ''}`}
           onClick={hasNextTrack ? nextTrack : undefined} 
         />
-        <img src={playlistIcon} alt="Playlist Icon" className="w-7 h-7 cursor-pointer transition-transform transform hover:scale-110 active:scale-95" />
+        <img src={playlistIcon} alt="Playlist Icon" className="hidden w-7 h-7 cursor-pointer transition-transform transform hover:scale-110 active:scale-95" />
       </div>
 
       <div className="flex-grow mx-6 flex items-center space-x-4">

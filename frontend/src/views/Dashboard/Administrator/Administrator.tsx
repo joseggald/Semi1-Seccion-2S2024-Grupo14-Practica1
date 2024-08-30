@@ -6,7 +6,7 @@ import deleteIcon from '../../../assets/songbar/delete.svg';
 import playIcon from '../../../assets/songbar/play.svg';
 import SuccessMessage from '../../../components/Utility/SuccessMessage';
 import ConfirmationModal from '../../../components/Utility/ConfirmationModal';
-import SongModal from '../../../components/Utility/SongModal';
+import SongModal from '../../../components/Modals/SongModal';
 
 type Song = {
   id: string;
@@ -151,18 +151,28 @@ const Administrator = () => {
                 <span className="truncate">{song.name}</span>
               </div>
               <span className="col-span-3 truncate">{song.artist_name}</span>
-              <span className="col-span-2 text-center">{Math.floor(song.duration / 60).toString().padStart(2, '0')}:{(song.duration % 60).toString().padStart(2, '0')}</span>
+              <span className="col-span-2 text-center">{(song.duration.minutes).toString().padStart(2, '0')}:{(song.duration.seconds).toString().padStart(2, '0')}</span>
               <div className="col-span-2 flex justify-center space-x-4">
-                <button onClick={() => handlePlaySong(song)} className="text-green-500">
-                  <img src={playIcon} alt="Play" className="w-6 h-6" />
-                </button>
-                <button onClick={() => { setEditingSong(song); setShowEditModal(true); }} className="text-yellow-500">
-                  <img src={editIcon} alt="Edit" className="w-6 h-6" />
-                </button>
-                <button onClick={() => { setSongToDelete(song); setShowDeleteConfirmation(true); }} className="text-red-500">
-                  <img src={deleteIcon} alt="Delete" className="w-6 h-6" />
-                </button>
+                  <button 
+                    onClick={() => handlePlaySong(song)} 
+                    className="text-green-500 transition-transform transform hover:scale-110 active:scale-95"
+                  >
+                    <img src={playIcon} alt="Play" className="w-6 h-6" />
+                  </button>
+                  <button 
+                    onClick={() => { setEditingSong(song); setShowEditModal(true); }} 
+                    className="text-yellow-500 transition-transform transform hover:scale-110 active:scale-95"
+                  >
+                    <img src={editIcon} alt="Edit" className="w-6 h-6" />
+                  </button>
+                  <button 
+                    onClick={() => { setSongToDelete(song); setShowDeleteConfirmation(true); }} 
+                    className="text-red-500 transition-transform transform hover:scale-110 active:scale-95"
+                  >
+                    <img src={deleteIcon} alt="Delete" className="w-6 h-6" />
+                  </button>
               </div>
+
             </div>
           ))}
         </div>

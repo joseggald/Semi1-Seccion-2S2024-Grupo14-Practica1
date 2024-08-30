@@ -70,7 +70,7 @@ const Header = () => {
                 isActive={isActive('/discover')}
               />
             </Link>
-        <div className="relative">
+        <div className="hidden relative">
           <input
             type="text"
             placeholder="Search..."

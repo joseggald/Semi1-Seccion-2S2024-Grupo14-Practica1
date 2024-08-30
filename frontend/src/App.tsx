@@ -11,6 +11,7 @@ import MyPlaylists from './views/Dashboard/Playlists/MyPlaylists';
 import Discover from './views/Dashboard/Discover/Discover';
 import Search from './views/Dashboard/Search/Search';
 import Administrator from './views/Dashboard/Administrator/Administrator';
+import PlaylistDetails from './views/Dashboard/Playlists/PlaylistDetails';
 import { PlayerProvider } from './context/PlayerContext'; // Asegúrate de tener la ruta correcta
 import AudioPlayer from './components/Utility/AudioPlayer'; // Asegúrate de tener la ruta correcta
 import { useEffect, useState } from 'react';
@@ -83,6 +84,7 @@ const AppRoutes = () => {
         <Route path="profile" element={<MyProfile />} />
         <Route path="favourites" element={<MyFavourites />} />
         <Route path="playlists" element={<MyPlaylists />} />
+        <Route path="playlists/:playlistId" element={<PlaylistDetails />} />
         <Route path="discover" element={<Discover />} />
         <Route path="search" element={<Search />} />
         {roleId === 1 && <Route path="administrator" element={<Administrator />} />}

@@ -49,6 +49,18 @@ class User {
             throw new Error(error);
         }
     }
+
+    async updatePhotoUrl(id, photo_url) {
+        const query = 'UPDATE users SET photo_url = $1 WHERE id = $2';
+        const values = [photo_url, id];
+        
+        try {
+            const result = await pool.query(query, values);
+            return result.rows[0];
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 }
   
 

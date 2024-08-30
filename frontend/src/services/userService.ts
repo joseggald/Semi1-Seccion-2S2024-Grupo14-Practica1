@@ -22,3 +22,6 @@ export const updatePhoto = async (photoUrl: string) => {
     throw error;
   }
 };
+
+
+

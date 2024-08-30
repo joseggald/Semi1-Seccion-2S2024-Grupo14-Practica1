@@ -28,7 +28,7 @@ exports.loginUser = async (req, res) => {
         }
 
         console.log(process.env.SECRET_KEY);
-        const token = jwt.sign({ id: foundUser.id, email: foundUser.email }, process.env.SECRET_KEY, { expiresIn: '30m' });
+        const token = jwt.sign({ id: foundUser.id, email: foundUser.email }, process.env.SECRET_KEY, { expiresIn: '190m' });
         const session = new UserSession(foundUser.id, token);
         await session.save();
         res.cookie('session_token', token, { httpOnly: true, secure: true, sameSite: 'Lax' });
@@ -80,3 +80,20 @@ exports.getUserById = async (req, res) => {
         error.status(400).json({ error: error.message });
     }
 }
+
+exports.updatePhoto = async (req, res) => {
+    const token = req.cookies.session_token;
+    try {
+        const session = new UserSession();
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const foundSession = await session.find(decoded.id, token);
+        if (!foundSession) return res.status(401).json({ message: 'Invalid session' });
+        const user = new User();
+        const foundUser = await user.findById(decoded.id);
+        const photo_url = req.body.photo_url;
+        await user.updatePhotoUrl(foundUser.id, photo_url);
+        res.json({ message: 'Photo updated successfully' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};

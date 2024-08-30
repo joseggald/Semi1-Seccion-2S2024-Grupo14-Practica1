@@ -2,15 +2,16 @@ const { query } = require('express');
 const pool = require('../db/dbConnection');
 
 class Playlist {
-    constructor(user_id, name, description) {
+    constructor(user_id, name, description, photo) {
         this.user_id = user_id;
         this.name = name;
         this.description = description;
+        this.photo = photo;
     }
 
     async create() {
-        const query = 'INSERT INTO playlists (user_id, name, description) VALUES ($1, $2, $3)';
-        const values = [this.user_id, this.name, this.description];
+        const query = 'INSERT INTO playlists (user_id, name, description, photo) VALUES ($1, $2, $3, $4)';
+        const values = [this.user_id, this.name, this.description, this.photo];
         
         try {
             const result = await pool.query(query, values);
