@@ -90,6 +90,18 @@ class Playlist {
             throw new Error(error);
         }
     }
+
+    async edit(playlist_id, name, description) {
+        const query = 'UPDATE playlists SET name = $2, description = $3 WHERE id = $1';
+        const values = [playlist_id, name, description];
+        
+        try {
+            const result = await pool.query(query, values);
+            return result.rows[0];
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 }
 
 module.exports = Playlist;

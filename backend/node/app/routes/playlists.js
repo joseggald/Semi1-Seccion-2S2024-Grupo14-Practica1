@@ -7,7 +7,8 @@ const {
   deleteSongFromPlaylist,
   getSongsFromPlaylist,
   getPlaylistsAdmin,
-  getPlaylistsUser
+  getPlaylistsUser,
+  editPlaylist
 } = require("../controllers/playlistController.js");
 
 router.post("/create", createPlaylist);
@@ -17,5 +18,6 @@ router.delete("/delete-song", deleteSongFromPlaylist);
 router.get("/get-songs", getSongsFromPlaylist);
 router.get("/get-all-admin", getPlaylistsAdmin);
 router.get("/get-all-user", getPlaylistsUser);
+router.put("/edit", editPlaylist);
 
 module.exports = router;
