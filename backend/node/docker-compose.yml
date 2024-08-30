@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    image: aldomoreirav/backend-node
+    container_name: backend-node
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_HOST=soundstream-db.c1wiiw8is8qo.us-east-1.rds.amazonaws.com
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=postgres
+      - DATABASE_USER=soundstream
+      - DATABASE_PASSWORD=soundstream123
+      - SECRET_KEY=GLheiaS1pCk0Amhv
+      - ALGORITHM=HS256
+      - AWS_ACCESS_KEY_ID=AKIAQKPIMCEMSA2FJ4HN
+      - AWS_SECRET_ACCESS_KEY=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
+      - S3_BUCKET_NAME=multimedia-semi1-seccion-g14
+    restart: always

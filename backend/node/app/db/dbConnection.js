@@ -2,11 +2,14 @@ require("dotenv").config();
 const { Pool } = require("pg");
 
 const pool = new Pool({
-  user: "admin",
-  host: "localhost",
-  database: "db_s1_soundstream",
-  password: "pwd123",
-  port: 5432,
+  host: process.env.DATABASE_HOST,
+  port: process.env.DATABASE_PORT,
+  database: process.env.DATABASE_NAME,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 module.exports = pool;
