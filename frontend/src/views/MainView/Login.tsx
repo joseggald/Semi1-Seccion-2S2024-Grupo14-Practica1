@@ -71,7 +71,9 @@ const Login: React.FC = () => {
               {error}
             </div>
           )}
-          {success && <SuccessMessage message={success} />} 
+          {success && <SuccessMessage message={success} onClose={function (): void {
+            throw new Error('Function not implemented.');
+          } } />} 
           <form onSubmit={handleSubmit} className="space-y-6">
             <FormInput
               label="Email"
@@ -79,7 +81,6 @@ const Login: React.FC = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
             />
             <FormInput
               label="Password"
@@ -87,7 +88,6 @@ const Login: React.FC = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="********"
             />
             <Button text="Sign In" type="submit" className="mt-4" />
           </form>

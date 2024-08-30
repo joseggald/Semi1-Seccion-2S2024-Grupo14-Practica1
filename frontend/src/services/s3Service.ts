@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000'; // Cambia esto al endpoint correcto si es necesario
+const API_URL = 'http://18.208.115.67:8000'; // Cambia esto al endpoint correcto si es necesario
 
 export const uploadImageToS3 = async (file: File) => {
   const formData = new FormData();

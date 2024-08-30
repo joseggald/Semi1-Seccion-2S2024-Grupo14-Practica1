@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { uploadImageToS3, uploadSongToS3 } from '../../services/s3Service';
 
 interface SongModalProps {

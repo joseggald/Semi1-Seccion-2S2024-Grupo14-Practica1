@@ -1,5 +1,5 @@
 
-const NavItem = ({ iconSrc, iconAlt, text, textColor, isActive }) => {
+const NavItem = ({ iconSrc, iconAlt, text, textColor, isActive }: { iconSrc: string; iconAlt: string; text: string; textColor: string; isActive: boolean }) => {
   return (
     <div
       className={`flex items-center px-2 py-1 rounded-full cursor-pointer transition-transform transform hover:scale-95 

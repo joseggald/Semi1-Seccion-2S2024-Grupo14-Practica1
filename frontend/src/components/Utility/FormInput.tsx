@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface FormInputProps {
   label: string;
@@ -62,7 +62,7 @@ const FormInput: React.FC<FormInputProps> = ({ label, type, id, value, onChange 
         </button>
       )}
 
-      <style jsx>{`
+      <style>{`
         input:-webkit-autofill {
           background-color: rgba(34, 40, 49, 1) !important;
           -webkit-text-fill-color: white !important;
