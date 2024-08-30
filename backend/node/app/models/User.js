@@ -27,6 +27,7 @@ class User {
     }
 
     async findById(id) {
+        console.log('id en models:',id);
         const query = 'SELECT * FROM users WHERE id = $1';
         const values = [id];
         

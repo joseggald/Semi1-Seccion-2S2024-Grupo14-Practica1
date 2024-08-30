@@ -56,7 +56,7 @@ exports.getSongById = async (req, res) => {
 
 // adding songs to favorites
 exports.addToFavorites = async (req, res) => {
-    const token = req.cookies.session_token;
+    const{ token } = req.body;
     try {
         const { song_id } = req.body;
         const session = new UserSession();
@@ -73,7 +73,7 @@ exports.addToFavorites = async (req, res) => {
 
 // removing songs from favorites
 exports.removeFromFavorites = async (req, res) => {
-    const token = req.cookies.session_token;
+    const{ token } = req.body;
     try {
         const { song_id } = req.body;
         const session = new UserSession();
@@ -89,7 +89,7 @@ exports.removeFromFavorites = async (req, res) => {
 };
 
 exports.getFavoritesUser = async (req, res) => {
-    const token = req.cookies.session_token;
+    const{ token } = req.body;
     try {
         const session = new UserSession();
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
@@ -138,7 +138,7 @@ exports.getByAuthorAdmin = async (req, res) => {
 
 // getting songs for user and adding a parameter to show if the song is in favorites
 exports.getAllUser = async (req, res) => {
-    const token = req.cookies.session_token;
+    const{ token } = req.body;
     try {
         const session = new UserSession();
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
