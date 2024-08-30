@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { handleError } from './handleError';
+import { handleError, handleErrorSongs } from './handleError';
 
 const API_URL = 'http://localhost:8000';
 
@@ -8,7 +8,7 @@ export const getAllSongs = async () => {
     const response = await axios.get(`${API_URL}/songs/get_all_admin`, { withCredentials: true });
     return response.data;
   } catch (error) {
-    handleError(error);
+    handleErrorSongs(error);
     throw error;
   }
 };
@@ -18,7 +18,7 @@ export const createSong = async (songData: any) => {
     const response = await axios.post(`${API_URL}/songs/create`, songData, { withCredentials: true });
     return response.data;
   } catch (error) {
-    handleError(error);
+    handleErrorSongs(error);
     throw error;
   }
 };
@@ -28,7 +28,7 @@ export const deleteSong = async (songId: string) => {
     const response = await axios.delete(`${API_URL}/songs/delete/${songId}`, { withCredentials: true });
     return response.data;
   } catch (error) {
-    handleError(error);
+    handleErrorSongs(error);
     throw error;
   }
 };
@@ -38,7 +38,7 @@ export const updateSong = async (songId: string, updatedData: any) => {
     const response = await axios.put(`${API_URL}/songs/update/${songId}`, updatedData, { withCredentials: true });
     return response.data;
   } catch (error) {
-    handleError(error);
+    handleErrorSongs(error);
     throw error;
   }
 };
