@@ -6,8 +6,7 @@ const UserSession = require('../models/UserSession');
 exports.createPlaylist = async (req, res) => {
     const{ token } = req.body;
     {
-        try {
-            
+        try {  
             const { name, description, photo } = req.body;
             console.log(name, description, photo);
             const session = new UserSession();

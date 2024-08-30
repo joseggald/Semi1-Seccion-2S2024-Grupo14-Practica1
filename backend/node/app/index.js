@@ -23,6 +23,5 @@ app.use('/playlists', require('./routes/playlists'));
 
 
 app.listen(8000, '0.0.0.0', () => {
-    console.log('ola mundo');
     console.log('Server running on http://0.0.0.0:8000');
 });
