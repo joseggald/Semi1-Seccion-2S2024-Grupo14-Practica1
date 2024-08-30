@@ -120,3 +120,21 @@ exports.getPlaylistsUser = async (req, res) => {
         }
     }
 };
+
+exports.editPlaylist = async (req, res) => {
+    const token = req.cookies.session_token;
+    {
+        try {
+            const { playlist_id, name, description } = req.body;
+            const session = new UserSession();
+            const decoded = jwt.verify(token, process.env.SECRET_KEY);
+            const foundSession = await session.find(decoded.id, token);
+            if (!foundSession) return res.status(401).json({ message: 'Invalid session' });
+            const playlist = new Playlist();
+            await playlist.edit(playlist_id, name, description);
+            res.status(200).json({ message: 'Playlist updated' });
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+};
