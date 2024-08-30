@@ -16,3 +16,16 @@ export const handleError = (error: any) => {
 
   throw error; 
 };
+export const handleErrorSongs = (error: any) => {
+  if (error.response) {
+    const statusCode = error.response.status;
+
+    if (statusCode === 500) {
+      console.error('Internal server error');
+    }
+  } else {
+    console.error('An unexpected error occurred:', error);
+  }
+
+  throw error;
+};

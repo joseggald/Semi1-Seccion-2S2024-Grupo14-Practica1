@@ -1,61 +1,85 @@
-import React, { useState, useEffect } from 'react';
-import { useSong } from '../../../context/SongContext';
+import React, { useEffect, useState } from 'react';
 import { getAllSongs, deleteSong, createSong, updateSong } from '../../../services/songService';
-import playIcon from '../../../assets/songbar/play.svg';
+import { usePlayer } from '../../../context/PlayerContext';
 import editIcon from '../../../assets/songbar/edit.svg';
 import deleteIcon from '../../../assets/songbar/delete.svg';
+import playIcon from '../../../assets/songbar/play.svg';
 import SuccessMessage from '../../../components/Utility/SuccessMessage';
 import ConfirmationModal from '../../../components/Utility/ConfirmationModal';
 import SongModal from '../../../components/Utility/SongModal';
 
-const Administrator: React.FC = () => {
-  const { setSongs, playSong } = useSong();
-  const [songs, setLocalSongs] = useState([]);
-  const [filteredSongs, setFilteredSongs] = useState([]); // Estado para manejar las canciones filtradas
-  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
-  const [newSong, setNewSong] = useState({
-    name: '',
-    photo: '',
-    duration: '',
-    artist_name: '',
-    mp3_file: ''
-  });
-  const [editingSong, setEditingSong] = useState(null);
+type Song = {
+  id: string;
+  name: string;
+  photo: string;
+  artist_name: string;
+  duration: number;
+  mp3_file: string;
+};
+
+const Administrator = () => {
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [filteredSongs, setFilteredSongs] = useState<Song[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [newSong, setNewSong] = useState<Song>({ id: '', name: '', photo: '', artist_name: '', duration: 0, mp3_file: '' });
+  const [editingSong, setEditingSong] = useState<Song | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [songToDelete, setSongToDelete] = useState(null);
+  const [songToDelete, setSongToDelete] = useState<Song | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const { playTrack, currentTrack, isPlaying, setTrackList } = usePlayer();
+
   useEffect(() => {
     const fetchSongs = async () => {
       try {
         const data = await getAllSongs();
-        setLocalSongs(data);
-        setFilteredSongs(data); // Inicialmente, mostrar todas las canciones
-        setSongs(data); // Pasar las canciones al contexto global
+        setSongs(data);
+        setFilteredSongs(data);
+        setTrackList(data.map(song => ({
+          id: song.id,
+          url: song.mp3_file,
+          name: song.name,
+          artist: song.artist_name,
+          photo: song.photo,
+          duration: song.duration,
+        })));
       } catch (error) {
         console.error('Failed to fetch songs:', error);
       }
     };
-
     fetchSongs();
-  }, [setSongs]);
+  }, [setTrackList]);
 
-  // Filtrar canciones según el término de búsqueda
-  useEffect(() => {
-    const filtered = songs.filter(song => 
-      song.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      song.artist_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredSongs(filtered);
-  }, [searchTerm, songs]);
+  const handlePlaySong = (song: Song) => {
+    if (currentTrack?.id !== song.id) {
+      playTrack({
+        id: song.id,
+        url: song.mp3_file,
+        name: song.name,
+        artist: song.artist_name,
+        photo: song.photo,
+        duration: song.duration
+      });
+    } else if (!isPlaying) {
+      playTrack({
+        id: song.id,
+        url: song.mp3_file,
+        name: song.name,
+        artist: song.artist_name,
+        photo: song.photo,
+        duration: song.duration
+      });
+    }
+  };
 
   const handleDelete = async () => {
     try {
       if (songToDelete) {
         await deleteSong(songToDelete.id);
-        setLocalSongs(songs.filter(song => song.id !== songToDelete.id));
-        setFilteredSongs(filteredSongs.filter(song => song.id !== songToDelete.id));
+        const updatedSongs = songs.filter(song => song.id !== songToDelete.id);
+        setSongs(updatedSongs);
+        setFilteredSongs(updatedSongs);
         setShowDeleteConfirmation(false);
         setSongToDelete(null);
         setSuccessMessage('Song deleted successfully!');
@@ -69,7 +93,7 @@ const Administrator: React.FC = () => {
     try {
       await createSong(finalSongData);
       setSuccessMessage('Song created successfully!');
-      window.location.reload(); // Refrescar la página
+      window.location.reload(); // Refresh the page to reflect changes
     } catch (error) {
       console.error('Failed to create song:', error);
     }
@@ -77,24 +101,14 @@ const Administrator: React.FC = () => {
 
   const handleEditSong = async (finalSongData) => {
     try {
-      await updateSong(editingSong.id, finalSongData);
-      setSuccessMessage('Song updated successfully!');
-      window.location.reload(); // Refrescar la página
+      if (editingSong) {
+        await updateSong(editingSong.id, finalSongData);
+        setSuccessMessage('Song updated successfully!');
+        window.location.reload(); // Refresh the page to reflect changes
+      }
     } catch (error) {
       console.error('Failed to update song:', error);
     }
-  };
-
-  const handlePlaySong = (song, index) => {
-    playSong(index);
-    setSuccessMessage(`Playing ${song.name} by ${song.artist_name}`);
-  };
-
-  const extractMinutesAndSeconds = (duration) => {
-    const parts = duration.split(':');
-    const minutes = parts[1];
-    const seconds = parts[2];
-    return `${minutes}:${seconds}`;
   };
 
   return (
@@ -103,15 +117,12 @@ const Administrator: React.FC = () => {
       <p className="text-white mt-4">Manage your songs</p>
       <div className="flex items-center justify-between mt-6 mb-4">
         <div className="flex items-center space-x-6">
-          <button 
-            onClick={() => setShowCreateModal(true)} 
-            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
-          >
+          <button onClick={() => setShowCreateModal(true)} className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105">
             Add New Song
           </button>
           <div className="flex items-center">
             <label htmlFor="search" className="text-white mr-2">Search:</label>
-            <input 
+            <input
               type="text"
               id="search"
               placeholder="By song or artist"
@@ -140,30 +151,15 @@ const Administrator: React.FC = () => {
                 <span className="truncate">{song.name}</span>
               </div>
               <span className="col-span-3 truncate">{song.artist_name}</span>
-              <span className="col-span-2 text-center">
-                {song.duration.minutes.toString().padStart(2, '0')}:
-                {song.duration.seconds.toString().padStart(2, '0')}
-              </span>
+              <span className="col-span-2 text-center">{Math.floor(song.duration / 60).toString().padStart(2, '0')}:{(song.duration % 60).toString().padStart(2, '0')}</span>
               <div className="col-span-2 flex justify-center space-x-4">
-                <button onClick={() => handlePlaySong(song, index)} className="text-green-500">
+                <button onClick={() => handlePlaySong(song)} className="text-green-500">
                   <img src={playIcon} alt="Play" className="w-6 h-6" />
                 </button>
-                <button 
-                  onClick={() => {
-                    setEditingSong(song);
-                    setShowEditModal(true);
-                  }} 
-                  className="text-yellow-500"
-                >
+                <button onClick={() => { setEditingSong(song); setShowEditModal(true); }} className="text-yellow-500">
                   <img src={editIcon} alt="Edit" className="w-6 h-6" />
                 </button>
-                <button 
-                  onClick={() => {
-                    setSongToDelete(song);
-                    setShowDeleteConfirmation(true);
-                  }} 
-                  className="text-red-500"
-                >
+                <button onClick={() => { setSongToDelete(song); setShowDeleteConfirmation(true); }} className="text-red-500">
                   <img src={deleteIcon} alt="Delete" className="w-6 h-6" />
                 </button>
               </div>

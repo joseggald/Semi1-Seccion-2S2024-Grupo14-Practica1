@@ -11,9 +11,11 @@ import MyPlaylists from './views/Dashboard/Playlists/MyPlaylists';
 import Discover from './views/Dashboard/Discover/Discover';
 import Search from './views/Dashboard/Search/Search';
 import Administrator from './views/Dashboard/Administrator/Administrator';
+import { PlayerProvider } from './context/PlayerContext'; // Asegúrate de tener la ruta correcta
+import AudioPlayer from './components/Utility/AudioPlayer'; // Asegúrate de tener la ruta correcta
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SongProvider } from './context/SongContext';
+
 const ProtectedRoute = ({ children, roleRequired }: { children: React.ReactNode, roleRequired?: number }) => {
   const { isAuthenticated, loading } = useAuth();
   const roleId = localStorage.getItem('roleId') ? parseInt(localStorage.getItem('roleId')!) : null;
@@ -52,7 +54,7 @@ const AppRoutes = () => {
   useEffect(() => {
     if (redirectPath) {
       navigate(redirectPath, { replace: true });
-      setRedirectPath(null);  // Reseteamos el path después de redirigir para evitar bucles
+      setRedirectPath(null);
     }
   }, [redirectPath, navigate]);
 
@@ -65,7 +67,6 @@ const AppRoutes = () => {
   }
 
   return (
-    <SongProvider>
     <Routes>
       <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login />} />
       <Route path="/register" element={isAuthenticated ? <Navigate to="/" /> : <Register />} />
@@ -89,7 +90,6 @@ const AppRoutes = () => {
 
       <Route path="*" element={<Navigate to={isAuthenticated ? (roleId === 1 ? "/administrator" : "/home") : "/login"} />} />
     </Routes>
-    </SongProvider>
   );
 };
 
@@ -98,7 +98,10 @@ function App() {
     <ErrorBoundary>
       <Router>
         <AuthProvider>
-          <AppRoutes />
+          <PlayerProvider>
+            <AppRoutes />
+            <AudioPlayer />
+          </PlayerProvider>
         </AuthProvider>
       </Router>
     </ErrorBoundary>

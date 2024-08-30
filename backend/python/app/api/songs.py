@@ -76,7 +76,6 @@ def get_songs(db: Session = Depends(get_db)):
     
     try:
         get_songs_response = song_service.get_songs(db)
-        print(get_songs_response)
         return get_songs_response
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

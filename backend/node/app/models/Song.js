@@ -11,21 +11,36 @@ class Song {
     }
 
     async save() {
-        const query = 'INSERT INTO songs (name, photo, duration, artist_name, mp3_file) VALUES ($1, $2, make_interval(secs => $3), $4, $5)';
-        const values = [this.name, this.photo, this.duration, this.artist_name, this.mp3_file];
+        const [hours, minutes, seconds] = this.duration.split(':').map(part => parseInt(part, 10));
+        const totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+        
+        const query = `
+            INSERT INTO songs (name, photo, duration, artist_name, mp3_file) 
+            VALUES ($1, $2, make_interval(secs := ${totalSeconds}), $3, $4)
+        `;
+        const values = [this.name, this.photo, this.artist_name, this.mp3_file];
         
         try {
             const result = await pool.query(query, values);
             return result.rows[0];
         } catch (error) {
+            console.log(error);
             throw new Error(error);
         }   
     }
+    
 
     async update(id) {
-        const query = 'UPDATE songs SET name = $1, photo = $2, duration = make_interval(secs => $3), artist_name = $4, mp3_file = $5 WHERE id = $6';
-        const values = [this.name, this.photo, this.duration, this.artist_name, this.mp3_file, id];
-        
+        const [hours, minutes, seconds] = this.duration.split(':').map(part => parseInt(part, 10));
+        const totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+    
+        const query = `
+            UPDATE songs 
+            SET name = $1, photo = $2, duration = make_interval(secs := ${totalSeconds}), artist_name = $3, mp3_file = $4 
+            WHERE id = $5
+        `;
+        const values = [this.name, this.photo, this.artist_name, this.mp3_file, id];
+    
         try {
             const result = await pool.query(query, values);
             return result.rows[0];
@@ -33,7 +48,6 @@ class Song {
             throw new Error(error);
         }
     }
-
     async delete(id) {
         const query = 'DELETE FROM songs WHERE id = $1';
         const values = [id];

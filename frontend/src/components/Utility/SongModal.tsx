@@ -13,17 +13,22 @@ interface SongModalProps {
 const SongModal: React.FC<SongModalProps> = ({ show, onClose, onSubmit, songData, setSongData, title }) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [minutes, setMinutes] = useState('');
-  const [seconds, setSeconds] = useState('');
+  const [minutes, setMinutes] = useState<string>('');
+  const [seconds, setSeconds] = useState<string>('');
 
   useEffect(() => {
-    if (songData && typeof songData.duration === 'string') {
-      const [mins, secs] = songData.duration.split(':').slice(1);
-      setMinutes(mins || '');
-      setSeconds(secs || '');
+    if (songData && songData.duration) {
+      if (typeof songData.duration === 'string') {
+        const parts = songData.duration.split(':');
+        setMinutes(parts[1] || '0');
+        setSeconds(parts[2] || '0');
+      } else {
+        setMinutes(String(songData.duration.minutes) || '0');
+        setSeconds(String(songData.duration.seconds) || '0');
+      }
     } else {
-      setMinutes('');
-      setSeconds('');
+      setMinutes('0');
+      setSeconds('0');
     }
   }, [songData?.duration]);
 
