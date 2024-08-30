@@ -46,12 +46,14 @@ def delete_playlist(db:Session,id:int):
 
 def playlist_add_song(db:Session,playlist_id:int, song_id:int):
     db_playlist = db.query(Playlist).filter(Playlist.id == playlist_id).first()
+    print(db_playlist)
     if not db_playlist:
         return None
     db_song = db.query(Song).filter(Song.id == song_id).first()
+    print(db_song)
     if not db_song:
         return None
-    db_playlist.songs.append(song_id)
+    db_playlist.songs.append(db_song)
     db.commit()
     db.refresh(db_playlist)
     return db_playlist

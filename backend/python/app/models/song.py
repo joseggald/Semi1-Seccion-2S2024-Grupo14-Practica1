@@ -15,7 +15,7 @@ class Song(Base):
     playlists = relationship("Playlist", secondary="playlist_songs", back_populates="songs")
 
 class Playlist(Base):
-    __tablename__ = "playlist"
+    __tablename__ = "playlists"
     id = Column(BigInteger, primary_key=True, index=True)
     user_id = Column(BigInteger, index=True)
     name = Column(String, nullable=False)
@@ -26,6 +26,6 @@ class Playlist(Base):
 
 playlist_songs = Table(
     'playlist_songs', Base.metadata,
-    Column('playlist_id', BigInteger, ForeignKey('playlist.id', ondelete="CASCADE"), primary_key=True),
+    Column('playlist_id', BigInteger, ForeignKey('playlists.id', ondelete="CASCADE"), primary_key=True),
     Column('song_id', BigInteger, ForeignKey('songs.id', ondelete="CASCADE"), primary_key=True)
 )

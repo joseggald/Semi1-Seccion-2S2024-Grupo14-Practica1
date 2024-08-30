@@ -42,7 +42,9 @@ CREATE TABLE songs (
 CREATE TABLE playlists (
   id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
-  name TEXT NOT NULL
+  name TEXT NOT NULL,
+  description TEXT,
+  photo TEXT
 );
 
 -- Crear tabla de canciones en listas de reproducción
