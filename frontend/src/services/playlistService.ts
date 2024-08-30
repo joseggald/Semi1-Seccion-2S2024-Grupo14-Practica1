@@ -7,7 +7,7 @@ const API_URL = 'http://localhost:8000';
 export const createPlaylist = async (playlistData: any, imageFile: File | null) => {
   try {
     let imageUrl = '';
-
+    const token = localStorage.getItem('token');
     if (imageFile) {
       const uploadResponse = await uploadImageToS3(imageFile);
       imageUrl = uploadResponse.url; 
@@ -15,7 +15,8 @@ export const createPlaylist = async (playlistData: any, imageFile: File | null) 
 
     const response = await axios.post(`${API_URL}/playlists/create`, {
       ...playlistData,
-      photo: imageUrl, 
+      photo: imageUrl,
+      token: token 
     }, { withCredentials: true });
 
     return response.data;
@@ -27,7 +28,8 @@ export const createPlaylist = async (playlistData: any, imageFile: File | null) 
 
 export const getAllPlaylists = async () => {
   try {
-    const response = await axios.get(`${API_URL}/playlists/get-all-user`, { withCredentials: true });
+    const token = localStorage.getItem('token');
+    const response = await axios.post(`${API_URL}/playlists/get-all-user`,{token:token},{ withCredentials: true });
     return response.data;
   } catch (error) {
     handleErrorSongs(error);
@@ -37,7 +39,8 @@ export const getAllPlaylists = async () => {
 
 export const getSongsInPlaylist = async (playlistId: string) => {
   try {
-    const response = await axios.post(`${API_URL}/playlists/get-songs`, { playlist_id: playlistId }, { withCredentials: true });
+    const token = localStorage.getItem('token');
+    const response = await axios.post(`${API_URL}/playlists/get-songs`, { playlist_id: playlistId,token:token }, { withCredentials: true });
     return response.data;
   } catch (error) {
     handleErrorSongs(error);
@@ -47,7 +50,8 @@ export const getSongsInPlaylist = async (playlistId: string) => {
 
 export const deletePlaylist = async (playlistId: string) => {
   try {
-    const response = await axios.delete(`${API_URL}/playlists/delete`, { data: { playlist_id: playlistId }, withCredentials: true });
+    const token = localStorage.getItem('token');
+    const response = await axios.delete(`${API_URL}/playlists/delete`, { data: { playlist_id: playlistId,token:token }, withCredentials: true });
     return response.data;
   } catch (error) {
     handleErrorSongs(error);
@@ -57,7 +61,8 @@ export const deletePlaylist = async (playlistId: string) => {
 
 export const deleteSongFromPlaylist = async (playlistId: string, songId: string) => {
   try {
-    const response = await axios.delete(`${API_URL}/playlists/delete-song`, { data: { playlist_id: playlistId, song_id: songId }, withCredentials: true });
+    const token = localStorage.getItem('token');
+    const response = await axios.delete(`${API_URL}/playlists/delete-song`, { data: { playlist_id: playlistId, song_id: songId,token:token }, withCredentials: true });
     return response.data;
   } catch (error) {
     handleErrorSongs(error);
@@ -67,7 +72,8 @@ export const deleteSongFromPlaylist = async (playlistId: string, songId: string)
 
 export const addToPlaylist = async (playlistId: string, songId: string) => {
   try {
-    const response = await axios.post(`${API_URL}/playlists/add-song`, { playlist_id: playlistId, song_id: songId }, { withCredentials: true });
+    const token = localStorage.getItem('token');
+    const response = await axios.post(`${API_URL}/playlists/add-song`, { playlist_id: playlistId, song_id: songId, token:token}, { withCredentials: true });
     return response.data;
   } catch (error) {
     handleErrorSongs(error);

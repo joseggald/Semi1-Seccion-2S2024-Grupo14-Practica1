@@ -1,4 +1,3 @@
-import React from 'react';
 import { usePlayer } from '../../context/PlayerContext';
 import favIcon from '../../assets/songbar/favFalse.svg';
 import nextLeftIcon from '../../assets/songbar/next_left.svg';
@@ -17,7 +16,6 @@ const Songbar: React.FC = () => {
     duration, 
     setVolume, 
     volume, 
-    setCurrentTime, 
     nextTrack, 
     prevTrack,
     hasNextTrack,
@@ -27,11 +25,6 @@ const Songbar: React.FC = () => {
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(event.target.value);
     setVolume(newVolume);
-  };
-
-  const handleProgressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(event.target.value);
-    setCurrentTime(newTime);
   };
 
   const formatTime = (time: number) => {

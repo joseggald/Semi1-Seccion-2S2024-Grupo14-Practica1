@@ -33,6 +33,7 @@ const MyProfile: React.FC = () => {
       } catch (err) {
         console.error('Failed to upload image:', err);
         setError('Failed to upload image.');
+        console.log(error);
       }
     }
   };

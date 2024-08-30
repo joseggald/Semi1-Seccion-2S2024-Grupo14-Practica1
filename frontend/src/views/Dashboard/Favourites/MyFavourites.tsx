@@ -43,14 +43,6 @@ const MyFavourites: React.FC = () => {
         const data: Song[] = await getMyFavorites();
         const favoriteOnly = data.filter(song => song.is_favorite);
         setFavouriteSongs(favoriteOnly);
-        setTrackList(favoriteOnly.map(song => ({
-          id: song.id,
-          url: song.mp3_file,
-          name: song.name,
-          artist: song.artist_name,
-          photo: song.photo,
-          duration: song.duration.minutes * 60 + song.duration.seconds,
-        })));
       } catch (error) {
         console.error('Failed to fetch favorite songs:', error);
       }
@@ -70,23 +62,27 @@ const MyFavourites: React.FC = () => {
   }, [setTrackList]);
 
   const handlePlaySong = (song: Song) => {
-    if (currentTrack?.id !== song.id) {
-      playTrack({
+    if (currentTrack?.name !== song.name) {
+      setTrackList(favouriteSongs.map(song => ({
         id: song.id,
         url: song.mp3_file,
         name: song.name,
         artist: song.artist_name,
         photo: song.photo,
-        duration: song.duration.minutes * 60 + song.duration.seconds,
+        duration: song.duration,
+      })));
+      playTrack({
+        url: song.mp3_file,
+        name: song.name,
+        artist: song.artist_name,
+        photo: song.photo
       });
     } else if (!isPlaying) {
       playTrack({
-        id: song.id,
         url: song.mp3_file,
         name: song.name,
         artist: song.artist_name,
-        photo: song.photo,
-        duration: song.duration.minutes * 60 + song.duration.seconds,
+        photo: song.photo
       });
     }
   };

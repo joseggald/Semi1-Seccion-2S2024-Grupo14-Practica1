@@ -43,19 +43,13 @@ const PlaylistDetails: React.FC = () => {
       try {
         const playlistData = await getSongsInPlaylist(playlistId || '');
         setPlaylistSongs(playlistData);
+        console.log(playlistSongs);
         const allSongs = await getMyFavorites();
-        const filteredSongs = allSongs.filter((song) =>
-          playlistData.some((ps) => ps.song_id === song.id)
+        const filteredSongs = allSongs.filter((song:any) =>
+          playlistData.some((ps:any) => ps.song_id === song.id)
         );
         setSongs(filteredSongs);
-        setTrackList(filteredSongs.map(song => ({
-          id: song.id,
-          url: song.mp3_file,
-          name: song.name,
-          artist: song.artist_name,
-          photo: song.photo,
-          duration: song.duration.minutes * 60 + song.duration.seconds,
-        })));
+        
       } catch (error) {
         console.error('Failed to fetch playlist songs:', error);
       }
@@ -65,23 +59,27 @@ const PlaylistDetails: React.FC = () => {
   }, [playlistId, setTrackList]);
 
   const handlePlaySong = (song: Song) => {
-    if (currentTrack?.id !== song.id) {
-      playTrack({
+    if (currentTrack?.name !== song.name) {
+      setTrackList(songs.map(song => ({
         id: song.id,
         url: song.mp3_file,
         name: song.name,
         artist: song.artist_name,
         photo: song.photo,
         duration: song.duration.minutes * 60 + song.duration.seconds,
+      })));
+      playTrack({
+        url: song.mp3_file,
+        name: song.name,
+        artist: song.artist_name,
+        photo: song.photo
       });
     } else if (!isPlaying) {
       playTrack({
-        id: song.id,
         url: song.mp3_file,
         name: song.name,
         artist: song.artist_name,
-        photo: song.photo,
-        duration: song.duration.minutes * 60 + song.duration.seconds,
+        photo: song.photo
       });
     }
   };

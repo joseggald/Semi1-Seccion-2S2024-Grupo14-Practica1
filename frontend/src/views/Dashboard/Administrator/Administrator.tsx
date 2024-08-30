@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getAllSongs, deleteSong, createSong, updateSong } from '../../../services/songService';
 import { usePlayer } from '../../../context/PlayerContext';
 import editIcon from '../../../assets/songbar/edit.svg';
@@ -13,7 +13,7 @@ type Song = {
   name: string;
   photo: string;
   artist_name: string;
-  duration: number;
+  duration: any;
   mp3_file: string;
 };
 
@@ -36,14 +36,7 @@ const Administrator = () => {
         const data = await getAllSongs();
         setSongs(data);
         setFilteredSongs(data);
-        setTrackList(data.map(song => ({
-          id: song.id,
-          url: song.mp3_file,
-          name: song.name,
-          artist: song.artist_name,
-          photo: song.photo,
-          duration: song.duration,
-        })));
+        
       } catch (error) {
         console.error('Failed to fetch songs:', error);
       }
@@ -52,23 +45,27 @@ const Administrator = () => {
   }, [setTrackList]);
 
   const handlePlaySong = (song: Song) => {
-    if (currentTrack?.id !== song.id) {
-      playTrack({
+    if (currentTrack?.name !== song.name) {
+      setTrackList(songs.map(song => ({
         id: song.id,
         url: song.mp3_file,
         name: song.name,
         artist: song.artist_name,
         photo: song.photo,
-        duration: song.duration
+        duration: song.duration,
+      })));
+      playTrack({
+        url: song.mp3_file,
+        name: song.name,
+        artist: song.artist_name,
+        photo: song.photo
       });
     } else if (!isPlaying) {
       playTrack({
-        id: song.id,
         url: song.mp3_file,
         name: song.name,
         artist: song.artist_name,
-        photo: song.photo,
-        duration: song.duration
+        photo: song.photo
       });
     }
   };
@@ -89,7 +86,7 @@ const Administrator = () => {
     }
   };
 
-  const handleCreateSong = async (finalSongData) => {
+  const handleCreateSong = async (finalSongData:any) => {
     try {
       await createSong(finalSongData);
       setSuccessMessage('Song created successfully!');
@@ -99,7 +96,7 @@ const Administrator = () => {
     }
   };
 
-  const handleEditSong = async (finalSongData) => {
+  const handleEditSong = async (finalSongData:any) => {
     try {
       if (editingSong) {
         await updateSong(editingSong.id, finalSongData);
@@ -134,7 +131,7 @@ const Administrator = () => {
         </div>
       </div>
 
-      <div className="bg-[#2b2e37] p-4 rounded-lg shadow-lg">
+      <div className="bg-[#2b2e37] p-4 rounded-lg shadow-lg mb-12">
         <div className="grid grid-cols-12 gap-4 p-4 text-white font-semibold">
           <span className="col-span-1 text-center">#</span>
           <span className="col-span-4">Title</span>

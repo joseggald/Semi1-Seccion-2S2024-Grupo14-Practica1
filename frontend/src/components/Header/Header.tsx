@@ -5,12 +5,10 @@ import ProfileImage from './ProfileImage';
 import home from '../../assets/header/home.svg';
 import discover from '../../assets/header/discover.svg';
 import search from '../../assets/header/search.svg';
-import { useAuth } from '../../context/AuthContext';
 
 const Header = () => {
   const location = useLocation();
   const [photo, setPhoto] = useState('');
-  const { roleId } = useAuth();
   const [username, setUsername] = useState('');
   
   const fetchUser = () => {
@@ -43,7 +41,7 @@ const Header = () => {
     };
   }, []);
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <header className="flex justify-between items-center w-full px-6 py-6 bg-[#111111] shadow-lg">
@@ -52,8 +50,6 @@ const Header = () => {
               <NavItem
                 iconSrc={home}
                 iconAlt="Home Icon"
-                iconWidth={20}
-                iconHeight={20}
                 text="Home"
                 textColor={isActive('/home') ? "text-[#E0E0E0]" : "text-[var(--fg-primary,#E0E0E0)]"}
                 isActive={isActive('/home')}
@@ -63,8 +59,6 @@ const Header = () => {
               <NavItem
                 iconSrc={discover}
                 iconAlt="Discover Icon"
-                iconWidth={20}
-                iconHeight={20}
                 text="Discover"
                 textColor={isActive('/discover') ? "text-[#E0E0E0]" : "text-[var(--fg-secondary,#898989)]"}
                 isActive={isActive('/discover')}

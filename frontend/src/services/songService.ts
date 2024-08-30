@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { handleError, handleErrorSongs } from './handleError';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = 'http://18.208.115.67:8000';
 
 export const getAllSongs = async () => {
   try {
@@ -46,7 +46,8 @@ export const updateSong = async (songId: string, updatedData: any) => {
 
 export const getMyFavorites = async () => {
   try {
-    const response = await axios.get(`${API_URL}/songs/get_all_user`, { withCredentials: true });
+    const token = localStorage.getItem('token');
+    const response = await axios.post(`${API_URL}/songs/get_all_user`,{token:token},{ withCredentials: true });
     return response.data;
   } catch (error) {
     handleError(error);
@@ -56,7 +57,8 @@ export const getMyFavorites = async () => {
 
 export const addFavorite = async (songId: string) => {
   try {
-    const response = await axios.post(`${API_URL}/songs/add_to_favorites`, { song_id: songId }, { withCredentials: true });
+    const token = localStorage.getItem('token');
+    const response = await axios.post(`${API_URL}/songs/add_to_favorites`, { song_id: songId, token:token }, { withCredentials: true });
     return response.data;
   } catch (error) {
     handleError(error);
@@ -66,7 +68,8 @@ export const addFavorite = async (songId: string) => {
 
 export const removeFavorite = async (songId: string) => {
   try {
-    const response = await axios.delete(`${API_URL}/songs/remove_from_favorites`, { data: { song_id: songId }, withCredentials: true });
+    const token = localStorage.getItem('token');
+    const response = await axios.delete(`${API_URL}/songs/remove_from_favorites`, { data: { song_id: songId, token:token }, withCredentials: true });
     return response.data;
   } catch (error) {
     handleError(error);

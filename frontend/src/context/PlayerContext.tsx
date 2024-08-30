@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 type Track = {
   url: string;
@@ -68,6 +68,31 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
 
   const hasNextTrack = currentTrackIndex !== null && currentTrackIndex < trackList.length - 1;
   const hasPrevTrack = currentTrackIndex !== null && currentTrackIndex > 0;
+
+  // Persist the state across component mounts/unmounts
+  useEffect(() => {
+    const savedState = localStorage.getItem('playerState');
+    if (savedState) {
+      const state = JSON.parse(savedState);
+      setTrackList(state.trackList);
+      setCurrentTrackIndex(state.currentTrackIndex);
+      setIsPlaying(state.isPlaying);
+      setCurrentTime(state.currentTime);
+      setDuration(state.duration);
+      setVolume(state.volume);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('playerState', JSON.stringify({
+      trackList,
+      currentTrackIndex,
+      isPlaying,
+      currentTime,
+      duration,
+      volume,
+    }));
+  }, [trackList, currentTrackIndex, isPlaying, currentTime, duration, volume]);
 
   return (
     <PlayerContext.Provider
