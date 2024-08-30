@@ -24,3 +24,4 @@ class UserGet(BaseModel):
 
 class UpdatePhotoRequest(BaseModel):
     photo_url: str
+    token: str
