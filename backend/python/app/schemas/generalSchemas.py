@@ -4,7 +4,10 @@ from typing import Optional,List
 class MessageResponse(BaseModel):
     message: str
 
+class SessionToken(BaseModel):
+    session_token:str
 class SongCreate(BaseModel):
+    session_token:str
     name: str
     photo: str
     duration: timedelta
@@ -46,8 +49,9 @@ class SongRead(SongCreate):
 
 class PlaylistId(BaseModel):
     playlist_id:int
+    session_token:str
 class PlaylistCreate(BaseModel):
-    #user_id: int
+    session_token:str
     name: str
     description:str
     photo: Optional[str] = None
