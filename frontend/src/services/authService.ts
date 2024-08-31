@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { handleError } from './handleError';
 import { getUser } from './userService';
-
+//18.208.115.67
 const API_URL = 'http://18.208.115.67:8000';
 
 export const login = async (email: string, password: string) => {
