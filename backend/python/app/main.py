@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api import users, s3,songs,playlists
+from app.api import users, s3,songs,playlists,favorite_api
 from app.db import base, session
 from app.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,6 +19,7 @@ app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(s3.router, prefix="/s3", tags=["Songs"])
 app.include_router(songs.router, prefix="/songs", tags={"Songs"})
 app.include_router(playlists.router, prefix="/playlists", tags={"Playlists"})
+app.include_router(favorite_api.router, prefix="/favorites", tags=["Favorites"])
 
 @app.on_event("startup")
 def on_startup():
