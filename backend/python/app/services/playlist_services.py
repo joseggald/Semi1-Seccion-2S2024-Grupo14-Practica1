@@ -5,8 +5,8 @@ from app.core.security import decode_token
 
 
 class PlaylistService:
-    def create_playlist(self,token,playlist_data,db):
-        user_id, email = decode_token(token)
+    def create_playlist(self,playlist_data,db):
+        user_id, email = decode_token(playlist_data.session_token)
         created_playlist = create_playlist(db,playlist_data,user_id)
         return {"message":"Playlist created successfully"}
     
