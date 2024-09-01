@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Cookie
 from sqlalchemy.orm import Session
-from app.schemas.favoriteSchemas import FavoriteCreate, FavoriteRead
+from app.schemas.favoriteSchema import FavoriteCreate, FavoriteRead
 from app.db.session import get_db
 from app.services.favorite_services import FavoriteService
 from fastapi.responses import JSONResponse

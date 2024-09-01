@@ -1,6 +1,6 @@
 from app.db.instances.favorite import Favorite
 from app.db.session import get_db
-from app.schemas.favoriteSchemas import FavoriteRead
+from app.schemas.favoriteSchema import FavoriteRead
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from app.core.security import decode_token  # Importa la función decode_token
